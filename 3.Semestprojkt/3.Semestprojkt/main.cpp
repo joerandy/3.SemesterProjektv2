@@ -6,6 +6,9 @@
 #include <opencv2/core/cvstd.hpp>
 #include <opencv2/videoio.hpp>
 
+#include <jdbc\mysql_driver.h>
+#include <jdbc\cppconn\config.h>
+
 using namespace std;
 using namespace cv;
 
