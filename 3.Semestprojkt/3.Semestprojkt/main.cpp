@@ -9,6 +9,11 @@
 #include <jdbc\mysql_driver.h>
 #include <jdbc\cppconn\config.h>
 
+#include "communication.h"
+#include "database.h"
+#include "image.h"
+
+
 using namespace std;
 using namespace cv;
 
