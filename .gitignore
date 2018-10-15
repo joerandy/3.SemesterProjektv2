@@ -263,6 +263,7 @@ OpenCVTest/OpenCVTest.vcxproj
 OpenCVTest/OpenCVTest.vcxproj.filters
 # Prerequisites
 *.d
+*.vcxproj
 
 # Compiled Object files
 *.slo
