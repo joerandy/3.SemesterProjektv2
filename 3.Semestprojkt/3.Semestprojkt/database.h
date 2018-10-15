@@ -4,6 +4,5 @@ class database
 public:
 	database();
 	~database();
-	bool create();
 };
 

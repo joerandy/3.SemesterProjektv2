@@ -12,7 +12,7 @@ communication::~communication()
 {
 }
 
-bool Communication::createSoc() {
+bool communication::createSoc() {
 	WSADATA wsa;
 	struct sockaddr_in server, client;
 	int c;
@@ -65,15 +65,16 @@ bool Communication::createSoc() {
 	return 0;
 }
 
-void Communication::sendMsg(string message) {
+void communication::sendMsg(string message) {
 	// Send message
 	const char *cMsg = message.c_str();
 	send(_newSocket, cMsg, strlen(cMsg), 0);                 // send
 }
 
-string Communication::recvMsg() {
-	char recvBuf[_buffLen];
-	int iResult = recv(_newSocket, recvBuf, _buffLen, 0);       // recv
+string communication::recvMsg() {
+	const int buffLen = 512;
+	char recvBuf[buffLen];
+	int iResult = recv(_newSocket, recvBuf, buffLen, 0);       // recv
 	if (iResult == 0) {
 		return "Message not recieved";
 	}
@@ -84,7 +85,7 @@ string Communication::recvMsg() {
 	return 0;
 }
 
-void Communication::close() {
+void communication::close() {
 	sendMsg("\n Disconnecting...");
 	getchar();
 
