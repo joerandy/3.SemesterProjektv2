@@ -71,6 +71,7 @@ void communication::sendMsg(string message) {
 }
 
 string communication::recvMsg() {
+
 	const int buffLen = 512;
 	char recvBuf[buffLen];
 	int iResult = recv(_newSocket, recvBuf, buffLen, 0);       // recv
@@ -78,10 +79,24 @@ string communication::recvMsg() {
 		return "Message not recieved";
 	}
 	else {
+		//the recvBuf array has no nullterminator and is filled with trashchars.
+		//we look through the buffer to replace the trashchars or various escape chars with null terminator
+		//this lets us compare the returned string without escape chars or trashchars
+		char trashchar, carriagereturn, newline;
+		trashchar = -52;
+		carriagereturn = 13;
+		newline = 10;
+		for (int i = 0; i < buffLen; i++) {
+			if (recvBuf[i] == trashchar || recvBuf[i] == carriagereturn || recvBuf[i] == newline) {
+				recvBuf[i] = '\0';
+				string message(recvBuf);
+				return message;
+			}
+		}
 		string message(recvBuf);
 		return message;
 	}
-	return 0;
+	return "Failure to recieve message";
 }
 
 void communication::close() {

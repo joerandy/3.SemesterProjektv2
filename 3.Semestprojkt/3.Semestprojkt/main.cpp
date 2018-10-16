@@ -21,12 +21,21 @@ void dbTesting() {
 	std::cin >> pw;
 	database DB;
 	DB.setCredentials(hn, un, pw);
-	DB.addEntry(90.0, 99, 99, 999999, true);
+	DB.addEntry(9099.0, 989, 99, 999999, true);
 
 }
 void socketTesting() {
+	std::string testString = "test";
 	communication com;
 	com.createSoc();
+	com.sendMsg("(1)");
+	std::string rcvd = com.recvMsg();
+	std::cout << rcvd;
+	if (rcvd == testString) {
+		com.sendMsg("Vi er i if, string = string");
+	}
+	com.sendMsg(rcvd);
+	com.close();
 }
 
 void imageTesting() {
@@ -43,10 +52,15 @@ void imageTesting() {
 int main() {
 	
 	//dbTesting();
+<<<<<<< HEAD
 
 	imageTesting();
 
+=======
+	socketTesting();
+>>>>>>> f7e8b56ebf2e2d31a92d37fc9573e711c1d2c0ef
 	waitKey(30);
+	getchar();
 	return 0;
 }
 

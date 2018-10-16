@@ -23,11 +23,8 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 		con = driver->connect(dbhostname, dbuser, dbpw);
 		/* Connect to the MySQL test database */
 		con->setSchema("test");
-
-		/* '?' is the supported placeholder syntax */
 		pstmt = con->prepareStatement("INSERT test_Data VALUES (CURRENT_TIMESTAMP,?,?,?,?,?)");
 		
-		//pstmt->setDateTime(1, dateTime); // USING PLACEHOLDER VALUE TO SHOW FORMAT, REPLACE WITH dateTime PARAMETER
 		pstmt->setDouble(1, ballXpos);
 		pstmt->setDouble(2, ballYpos);
 		pstmt->setDouble(3, cupXpos);
@@ -49,8 +46,10 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 
 void database::setCredentials(std::string hostname, std::string dbusername, std::string dbpass)
 {
-	//dbhostname = hostname.c_str();
+	
+	/*
+	dbhostname = hostname.c_str();
 	dbuser = dbusername.c_str();
 	dbpw = dbpw.c_str();
-	std::cout << std::endl << dbpw.c_str();
+	std::cout << std::endl << dbpw.c_str();*/
 }
