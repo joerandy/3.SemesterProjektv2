@@ -14,14 +14,20 @@ public:
 	~image();
 	bool getImg();
 	void calibrate();
-	void convert();
-	void detectColour();
+	void convertHSV();
+	void convertGray();
+	void maskColour();
 	void detectCircles();
 	void display();
 private:
 	cv::Mat _srcImg;
+	cv::Mat _mask;
 	cv::Mat _dstImg;
 	cv::Mat _hsvImg;
-	cv::Mat _calibImg;
+	cv::Mat _grayImg;
+	int _x;
+	int _y;
+	int _r;
+	int _d;
 };
 

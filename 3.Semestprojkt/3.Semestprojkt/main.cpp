@@ -29,9 +29,22 @@ void socketTesting() {
 	com.createSoc();
 }
 
+void imageTesting() {
+	image img;
+	img.getImg();
+	img.convertHSV();
+	img.maskColour();
+	img.convertGray();
+	img.detectCircles();
+	// img.getCoordinates();
+	img.display();
+}
+
 int main() {
 	
-	dbTesting();
+	//dbTesting();
+
+	imageTesting();
 
 	waitKey(30);
 	return 0;

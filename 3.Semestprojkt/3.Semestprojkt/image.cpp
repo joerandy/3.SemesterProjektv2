@@ -4,11 +4,11 @@ using namespace std;
 using namespace cv;
 
 
-image::image(){
+image::image() {
 }
 
 
-image::~image(){
+image::~image() {
 }
 
 bool image::getImg() {
@@ -28,7 +28,7 @@ bool image::getImg() {
 	//}
 
 	cap >> _srcImg; // get a new frame from camera
-	_dstImg = _srcImg;
+	//_srcImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
 
 	return true;
 }
@@ -137,22 +137,49 @@ void image::calibrate() {
 }
 
 
-void image::convert() {
+void image::convertHSV() {
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
 
-void image::detectColour() {
-	inRange(_hsvImg, Scalar(15, 150, 60), Scalar(20, 250, 255), _dstImg); // Scalars are found using the HSV colormap
-	//Orange: Scalar(10,200,60), Scalar(25,255,255) eller! Scalar(15,150,60), Scalar(20,250,255)
-	//Blue: Scalar(110,200,60), Scalar(130,255,255)
+void image::convertGray() {
+	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
+void image::maskColour() {
+	inRange(_hsvImg, Scalar(0, 0, 0), Scalar(255, 255, 255), _mask); // Scalars are found using the HSV colormap
+	// Orange: Scalar(10, 150, 60), Scalar(25, 250, 255)
+	// Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
+	GaussianBlur(_mask, _mask, cv::Size(9, 9), 2, 2);
+
+	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+}
 
 void image::detectCircles() {
 	vector<Vec3f> circles;
+
+	//GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
+
+	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0); // see opencv documentation: 15 = radius min. 30 = radius max. 
+
+	for (size_t i = 0; i < circles.size(); i++) {
+		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+		int radius = cvRound(circles[i][2]);
+		int diameter = radius * 2;
+		cout << "Cirkel nr. " << i << "'s diameter er: " << diameter << endl;
+		cout << "Center = " << center << endl;
+		// circle center
+		circle(_dstImg, center, 3, Scalar(255, 0, 0), -1, 8, 0);
+		// circle outline
+		circle(_dstImg, center, radius, Scalar(0, 255, 0), 3, 8, 0);	// black circle around circular opbject
+		_x = center.x;
+		_y = center.y;
+		_r = radius;
+		_d = diameter;
+	}
 }
 
 void image::display() {
+	imshow("gray", _grayImg);
 	imshow("Display _dst", _dstImg);
 	waitKey(0);
 }
