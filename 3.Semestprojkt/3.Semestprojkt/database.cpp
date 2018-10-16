@@ -11,17 +11,16 @@ database::~database()
 {
 }
 
-void database::addEntry(std::string dateTime, double ballXpos, double ballYpos, double cupXpos, double cupYpos, bool success)
+void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, bool success)
 {
 	
 	try {
 		sql::Driver *driver;
 		sql::Connection *con;
 		sql::PreparedStatement *pstmt;
-	
 		/* Create a connection */
 		driver = get_driver_instance();
-		con = driver->connect("tcp://127.0.0.1:3306", "root", "password");
+		con = driver->connect(dbhostname, dbuser, dbpw);
 		/* Connect to the MySQL test database */
 		con->setSchema("test");
 
@@ -46,4 +45,12 @@ void database::addEntry(std::string dateTime, double ballXpos, double ballYpos, 
 		std::cout << " (MySQL error code: " << e.getErrorCode();
 		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
 	}
+}
+
+void database::setCredentials(std::string hostname, std::string dbusername, std::string dbpass)
+{
+	//dbhostname = hostname.c_str();
+	dbuser = dbusername.c_str();
+	dbpw = dbpw.c_str();
+	std::cout << std::endl << dbpw.c_str();
 }

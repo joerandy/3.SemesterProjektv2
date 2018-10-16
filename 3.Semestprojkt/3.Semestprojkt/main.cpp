@@ -11,12 +11,29 @@
 using namespace std;
 using namespace cv;
 
-int main() {
-	
+void dbTesting() {
+	string hn, un, pw;
+	std::cout << "Enter DB hostname: ";
+	std::cin >> hn;
+	std::cout << "Enter DB username: ";
+	std::cin >> un;
+	std::cout << "Enter DB password: ";
+	std::cin >> pw;
+	database DB;
+	DB.setCredentials(hn, un, pw);
+	DB.addEntry(90.0, 99, 99, 999999, true);
+
+}
+void socketTesting() {
 	communication com;
 	com.createSoc();
-	
+}
 
-	getchar();
+int main() {
+	
+	dbTesting();
+
+	waitKey(30);
 	return 0;
 }
+
