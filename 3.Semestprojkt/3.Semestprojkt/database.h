@@ -20,10 +20,11 @@ public:
 	~database();
 	//void return type - maybe change to bool to return false if data is not saved
 	void addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, bool success);
+	//not currently implemented properly.
 	void setCredentials(std::string hostname, std::string dbuser, std::string dbpw);
 private:
 	sql::SQLString dbpw = "";
-	sql::SQLString dbuser = "FNUGGI";
+	sql::SQLString dbuser = "";
 	sql::SQLString dbhostname = "tcp://127.0.0.1:3306";
 };
 
