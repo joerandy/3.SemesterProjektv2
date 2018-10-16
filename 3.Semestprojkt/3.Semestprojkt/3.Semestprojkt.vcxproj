@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\opencv\opencv\build\include;C:\Program Files\MySQL\Connector C++ 8.0\include;C:\boost_1_68_0;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\opencv\build\x64\vc15\lib;C:\Program Files\MySQL\Connector C++ 8.0\lib64;C:\boost_1_68_0\libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\opencv\opencv\build\x64\vc15\lib;C:\Program Files\MySQL\Connector C++ 8.0\lib64\vs14;C:\boost_1_68_0\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opencv_world343.lib;opencv_world343d.lib;wsock32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world343.lib;opencv_world343d.lib;wsock32.lib;ws2_32.lib;mysqlcppconn8.lib;mysqlcppconn8-static.lib;ssleay32.lib;mysqlcppconn-static.lib;libeay32.lib;mysqlcppconn.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
