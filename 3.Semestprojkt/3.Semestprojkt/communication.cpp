@@ -2,14 +2,13 @@
 
 using namespace std;
 
+communication::communication() {
 
-communication::communication()
-{
 }
 
 
-communication::~communication()
-{
+communication::~communication() {
+
 }
 
 bool communication::createSoc() {

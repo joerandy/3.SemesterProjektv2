@@ -4,32 +4,32 @@ using namespace std;
 using namespace cv;
 
 
-image::image()
-{
+image::image(){
 }
 
 
-image::~image()
-{
+image::~image(){
 }
 
-bool image::getImg()
-{
-	VideoCapture cap(1); // open the default camera (0), (1) for USB
+bool image::getImg() {
+	VideoCapture cap(0); // open the default camera (0), (1) for USB
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1448);
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-	if (!cap.isOpened())  // check if we succeeded
+	if (!cap.isOpened()) {  // check if we succeeded
 		return false;
-
-	Mat edges;
-	namedWindow("edges", 1);
-	for (;;)
-	{
-		Mat frame;
-		cap >> frame; // get a new frame from camera
-		imshow("edges", frame);
-		if (waitKey(30) >= 0) break;
 	}
+
+	//while (true) {
+	//	cap >> _srcImg; // get a new frame from camera
+	//	imshow("frame", _srcImg);
+	//	if (waitKey(30) >= 0) {
+	//		break;
+	//	}
+	//}
+
+	cap >> _srcImg; // get a new frame from camera
+	_dstImg = _srcImg;
+
 	return true;
 }
 
@@ -143,13 +143,10 @@ void image::convert() {
 
 void image::detectColour() {
 	inRange(_hsvImg, Scalar(15, 150, 60), Scalar(20, 250, 255), _dstImg); // Scalars are found using the HSV colormap
+	//Orange: Scalar(10,200,60), Scalar(25,255,255) eller! Scalar(15,150,60), Scalar(20,250,255)
+	//Blue: Scalar(110,200,60), Scalar(130,255,255)
 }
-//Orange: Scalar(10,200,60), Scalar(25,255,255) eller! Scalar(15,150,60), Scalar(20,250,255)
-//Blue: Scalar(110,200,60), Scalar(130,255,255)
 
-void image::detectCircle() {
-
-}
 
 void image::detectCircles() {
 	vector<Vec3f> circles;

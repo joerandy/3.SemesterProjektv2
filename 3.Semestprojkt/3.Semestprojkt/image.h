@@ -16,7 +16,6 @@ public:
 	void calibrate();
 	void convert();
 	void detectColour();
-	void detectCircle();
 	void detectCircles();
 	void display();
 private:
