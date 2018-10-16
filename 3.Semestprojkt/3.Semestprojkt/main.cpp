@@ -28,7 +28,9 @@ void socketTesting() {
 	std::string testString = "test";
 	communication com;
 	com.createSoc();
+	com.sendMsg("(1)");
 	std::string rcvd = com.recvMsg();
+	std::cout << rcvd;
 	if (rcvd == testString) {
 		com.sendMsg("Vi er i if, string = string");
 	}
@@ -38,8 +40,8 @@ void socketTesting() {
 
 int main() {
 	
-	dbTesting();
-	//socketTesting();
+	//dbTesting();
+	socketTesting();
 	waitKey(30);
 	getchar();
 	return 0;
