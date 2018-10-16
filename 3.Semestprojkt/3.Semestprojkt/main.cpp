@@ -13,15 +13,15 @@ using namespace cv;
 
 void dbTesting() {
 	string hn, un, pw;
-	std::cout << "Enter DB hostname: ";
+	/*std::cout << "Enter DB hostname: ";
 	std::cin >> hn;
 	std::cout << "Enter DB username: ";
 	std::cin >> un;
 	std::cout << "Enter DB password: ";
-	std::cin >> pw;
+	std::cin >> pw;*/
 	database DB;
-	DB.setCredentials(hn, un, pw);
-	DB.addEntry(90.0, 99, 99, 999999, true);
+	//DB.setCredentials(hn, un, pw);
+	DB.addEntry(9099.0, 989, 99, 999999, true);
 
 }
 void socketTesting() {
@@ -34,6 +34,7 @@ int main() {
 	dbTesting();
 
 	waitKey(30);
+	getchar();
 	return 0;
 }
 

@@ -49,8 +49,9 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 
 void database::setCredentials(std::string hostname, std::string dbusername, std::string dbpass)
 {
-	//dbhostname = hostname.c_str();
+	/*
+	dbhostname = hostname.c_str();
 	dbuser = dbusername.c_str();
 	dbpw = dbpw.c_str();
-	std::cout << std::endl << dbpw.c_str();
+	std::cout << std::endl << dbpw.c_str();*/
 }
