@@ -4,6 +4,7 @@
 
 database::database()
 {
+
 }
 
 
@@ -18,19 +19,19 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 		sql::Driver *driver;
 		sql::Connection *con;
 		sql::PreparedStatement *pstmt;
-		/* Create a connection */
+
 		driver = get_driver_instance();
 		con = driver->connect(dbhostname, dbuser, dbpw);
-		/* Connect to the MySQL test database */
 		con->setSchema("test");
+
 		pstmt = con->prepareStatement("INSERT test_Data VALUES (CURRENT_TIMESTAMP,?,?,?,?,?)");
-		
 		pstmt->setDouble(1, ballXpos);
 		pstmt->setDouble(2, ballYpos);
 		pstmt->setDouble(3, cupXpos);
 		pstmt->setDouble(4, cupYpos);
 		pstmt->setBoolean(5, success);
 		pstmt->executeUpdate();
+
 		delete pstmt;
 		delete con;
 
