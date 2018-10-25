@@ -13,7 +13,7 @@ image::~image() {
 
 bool image::getImg() {
 	VideoCapture cap(0); // open the default camera (0), (1) for USB
-	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1448);
+	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1420);
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
 	if (!cap.isOpened()) {  // check if we succeeded
 		return false;
@@ -33,21 +33,25 @@ bool image::getImg() {
 	return true;
 }
 
-
 void image::calibrate() {
+
 	vector<String> fileNames;
-	glob("C:/images/calibration/Image*.png", fileNames, false);
+	const string path = "c:/images/calibration/Image*.png";
+	cv::setBreakOnError(true);
+	cv::glob(path, fileNames, false);
 	Size patternSize(25 - 1, 18 - 1); // corners inside squares
-	vector<vector<Vec2f>> q(fileNames.size());
+	vector<vector<Point2f>> q(fileNames.size());
 
 	// Detect feature points
 	size_t i = 0;
+
 	for (auto const &f : fileNames) {
 		//        cout << string(f) << endl;
 
 		// 1. Read in the image and call findChessboardCorners()
 		Mat img;
 		img = imread(f, CV_LOAD_IMAGE_ANYDEPTH);
+		
 		bool success = findChessboardCorners(img, patternSize, q[i]);
 
 		// 2. Use cornerSubPix() to refine the found corner detection
@@ -56,8 +60,8 @@ void image::calibrate() {
 
 																														// Display
 		drawChessboardCorners(img, patternSize, Mat(q[i]), success);
-		//        imshow("Chessboard detection "+f, img);
-		//        waitKey(0);
+		        imshow("Chessboard detection "+f, img);
+		        waitKey(0);
 
 		i++;
 	}
@@ -136,7 +140,6 @@ void image::calibrate() {
 	//    }
 }
 
-
 void image::convertHSV() {
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
@@ -146,10 +149,13 @@ void image::convertGray() {
 }
 
 void image::maskColour() {
-	inRange(_hsvImg, Scalar(0, 0, 0), Scalar(255, 255, 255), _mask); // Scalars are found using the HSV colormap
-	// Orange: Scalar(10, 150, 60), Scalar(25, 250, 255)
+	//inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalars are found using the HSV colormap
+	inRange(_hsvImg, Scalar(100, 150, 0), Scalar(140, 255, 255), _mask);
+	// Blue: Scalar(100, 150, 0), Scalar(140, 255, 255)
+	// Orange: Scalar(10, 150, 60), Scalar(25,255,200)
 	// Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
-	GaussianBlur(_mask, _mask, cv::Size(9, 9), 2, 2);
+
+	//GaussianBlur(_mask, _mask, cv::Size(9, 9), 2, 2);
 
 	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 }
@@ -157,7 +163,7 @@ void image::maskColour() {
 void image::detectCircles() {
 	vector<Vec3f> circles;
 
-	//GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
+	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
 
 	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0); // see opencv documentation: 15 = radius min. 30 = radius max. 
 
@@ -176,6 +182,13 @@ void image::detectCircles() {
 		_r = radius;
 		_d = diameter;
 	}
+}
+
+coordinates image::getCoordinates() {
+	coordinates pos;
+	pos.x = _x;
+	pos.y = _y;
+	return pos;
 }
 
 void image::display() {
