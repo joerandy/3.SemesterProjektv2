@@ -27,117 +27,52 @@ bool image::getImg() {
 	//	}
 	//}
 
-	cap >> _srcImg; // get a new frame from camera
-	//_srcImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	Mat inputImg;
+	cap >> inputImg; // get a new frame from camera
+	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	
+	undistort(inputImg, _srcImg, _K, _k);
 
 	return true;
 }
 
-void image::calibrate() {
+bool image::getCalibration(string fileName) {
+	float buffer;
+	ifstream myfile;
+	myfile.open("example.txt");
 
-	vector<String> fileNames;
-	const string path = "c:/images/calibration/Image*.png";
-	cv::setBreakOnError(true);
-	cv::glob(path, fileNames, false);
-	Size patternSize(25 - 1, 18 - 1); // corners inside squares
-	vector<vector<Point2f>> q(fileNames.size());
-
-	// Detect feature points
-	size_t i = 0;
-
-	for (auto const &f : fileNames) {
-		//        cout << string(f) << endl;
-
-		// 1. Read in the image and call findChessboardCorners()
-		Mat img;
-		img = imread(f, CV_LOAD_IMAGE_ANYDEPTH);
-		
-		bool success = findChessboardCorners(img, patternSize, q[i]);
-
-		// 2. Use cornerSubPix() to refine the found corner detection
-		Size zeroZone(15, 15);
-		cornerSubPix(img, Mat(q[i]), patternSize, zeroZone, TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1)); // 30 = # of iterations, 0.1 = improvements pr. iteration
-
-																														// Display
-		drawChessboardCorners(img, patternSize, Mat(q[i]), success);
-		        imshow("Chessboard detection "+f, img);
-		        waitKey(0);
-
-		i++;
+	for (int i = 0; i < 5; i++) {
+		myfile >> buffer;
+		_k(i) = buffer;
 	}
-
-	vector<vector<Point3f>> Q;
-
-	// 3. Generate checkerboard (world) coordinates Q. The board has 25x18
-	// fields with a size of 15x15mm (Z-coordinate = 0)
-
-	Matx33f K(Matx33f::eye()); // intrinsic camera matrix
-	Vec<float, 5> k(0, 0, 0, 0, 0); // distortion coefficients
-
-	vector<Mat> rvecs, tvecs;
-	vector<double> stdIntrinsics, stdExtrinsics, perViewErrors;
-	int flags = CALIB_FIX_ASPECT_RATIO + CALIB_FIX_K3 + CALIB_ZERO_TANGENT_DIST + CALIB_FIX_PRINCIPAL_POINT;
-	Size frameSize(1440, 1080);
-
-	cout << "Calibrating..." << endl;
-
-	// 4. Call "float error = cv::calibrateCamera()" with the input coordinates
-	// and output parameters as declared above...
-
-	// 3D coordinates of chessboard points
-	//board size
-	int x = 25; //length
-	int y = 18; //width
-	int a = 15; //length of small squares
-	std::vector<cv::Point3f> objectPoints;
-	for (int i = 0; i < y; i++) {
-		for (int j = 0; j < x; j++) {
-			objectPoints.push_back(cv::Point3f(j*a, i*a, 0));
+	
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			myfile >> buffer;
+			_K(i, j) = buffer;
 		}
 	}
 
-	//    vector<Point2f> image_point;
-	//    for (int i = 0; i < x; i++) {
-	//        image_point.push_back(Point2f(q[i], q[i]));
-	//    }
-	//    imagePoints.push_back(image_point);
+	myfile >> _distanceRatio;
 
-	Size imageSize = frameSize;
-	Matx33f cameraMatrix = K;
-	Vec<float, 5> distCoeffs = k;
+	myfile.close();
 
-	cout << "pre calibrateCamera" << endl;
+	//cout << _k << endl;
+	//cout << _K << endl;
 
-	cout << "q size: " << q.size() << endl;
-	cout << "objectPoints size: " << objectPoints.size() << endl;
-	//    cout << "obj[i] size: " << objectPoints[1]. << endl;
+	//Mat testImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	//Mat resultImg;
+	//undistort(testImg, resultImg, _K, _k);
 
-	float error = calibrateCamera(objectPoints, q, imageSize, cameraMatrix, distCoeffs, rvecs, tvecs, flags);
-	cout << "Reprojection error = " << error << "\nK=\n"
-		<< K << "\nK=\n"
-		<< k << endl;
+	//imshow("whaaaat", resultImg);
+	//waitKey(0);
 
-	cout << "post calibrateCamera" << endl;
+	Point p1 = Point(10, 0);
+	Point p2 = Point(0, 0);
+	
 
-	// Precompute lens correction interpolation
-	Mat mapX, mapY;
-	initUndistortRectifyMap(K, k, Matx33f::eye(), K, frameSize, CV_32FC1, mapX, mapY);
 
-	cout << "end" << endl;
-
-	// Show lens corrected images
-	//    for (auto const &f : fileNames) {
-	//        cout << string(f) << endl;
-
-	//        Mat img = imread(f, IMREAD_COLOR);
-
-	//        Mat imgUndistorted;
-	//        // 5. Remap the image using the precomputed interpolation maps.
-
-	//        // Display
-	//        imshow("undistorted image", imgUndistorted);
-	//        waitKey(0);
-	//    }
+	return 0;
 }
 
 void image::convertHSV() {
@@ -149,8 +84,7 @@ void image::convertGray() {
 }
 
 void image::maskColour() {
-	//inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalars are found using the HSV colormap
-	inRange(_hsvImg, Scalar(100, 150, 0), Scalar(140, 255, 255), _mask);
+	inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalars are found using the HSV colormap
 	// Blue: Scalar(100, 150, 0), Scalar(140, 255, 255)
 	// Orange: Scalar(10, 150, 60), Scalar(25,255,200)
 	// Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
@@ -192,7 +126,6 @@ coordinates image::getCoordinates() {
 }
 
 void image::display() {
-	imshow("gray", _grayImg);
 	imshow("Display _dst", _dstImg);
 	waitKey(0);
 }

@@ -40,13 +40,13 @@ void socketTesting() {
 
 void imageTesting() {
 	image img;
-	//img.calibrate();
+	img.getCalibration("input.xml");
 	img.getImg();
 	img.convertHSV();
 	img.maskColour();
 	img.convertGray();
 	img.detectCircles();
-	//coordinates pos = img.getCoordinates();
+	////coordinates pos = img.getCoordinates();
 	img.display();
 }
 
