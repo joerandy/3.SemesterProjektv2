@@ -26,7 +26,6 @@ void socketTesting() {
 	if (rcvd == testString) {
 		com.sendMsg("Vi er i if, string = string");
 	}
-	com.sendMsg(rcvd);
 	com.close();
 }
 
