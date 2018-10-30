@@ -18,22 +18,22 @@ class image
 public:
 	image();
 	~image();
-	bool getCalibration(std::string fileName);
-	bool getImg();
-	void convertHSV();
-	void maskColour();
-	void convertGray();
-	void detectCircles();
-	coordinates getCoordinates();
-	void display();
+	bool getCalibration(std::string fileName);	// reads from input file
+	bool getImg();								// takes picture
+	void convertHSV();							// converts to HSV
+	void maskColour();							// creates mask
+	void convertGray();							// converts to grayscale
+	void detectCircles();						// deetect circles
+	coordinates getCoordinates();			
+	void display();								// display picture
 private:
-	cv::Matx33f _K;
-	cv::Vec<float, 5> _k;
-	cv::Mat _srcImg;
-	cv::Mat _hsvImg;
-	cv::Mat _mask;
-	cv::Mat _grayImg;
-	cv::Mat _dstImg;
+	cv::Matx33f _K;				// camera-matrixen 
+	cv::Vec<float, 5> _k;		// Distortion-coefficienten
+	cv::Mat _srcImg;			// stores input picture
+	cv::Mat _hsvImg;			// stores picture converted to hsv
+	cv::Mat _mask;				// stores picture of color-mask
+	cv::Mat _grayImg;			// stores picture converted to grayscale
+	cv::Mat _dstImg;			// stores output pictue
 
 	double _distanceRatio;
 	int _x;

@@ -67,11 +67,6 @@ bool image::getCalibration(string fileName) {
 	//imshow("whaaaat", resultImg);
 	//waitKey(0);
 
-	Point p1 = Point(10, 0);
-	Point p2 = Point(0, 0);
-	
-
-
 	return 0;
 }
 
