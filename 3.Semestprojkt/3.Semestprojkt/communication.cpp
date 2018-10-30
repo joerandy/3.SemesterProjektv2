@@ -82,10 +82,8 @@ string communication::recvMsg() {
 		//the recvBuf array has no nullterminator and is filled with trashchars.
 		//we look through the buffer to replace the trashchars or various escape chars with null terminator
 		//this lets us compare the returned string without escape chars or trashchars
-		char trashchar, carriagereturn, newline;
-		trashchar = -52;
-		carriagereturn = 13;
-		newline = 10;
+		char trashchar = -52, carriagereturn = 13, newline = 10;
+
 		for (int i = 0; i < buffLen; i++) {
 			if (recvBuf[i] == trashchar || recvBuf[i] == carriagereturn || recvBuf[i] == newline) {
 				recvBuf[i] = '\0';
