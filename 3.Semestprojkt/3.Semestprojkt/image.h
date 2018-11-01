@@ -27,15 +27,15 @@ public:
 	coordinates getCoordinates();			
 	void display();								// display picture
 private:
-	cv::Matx33f _K;				// camera-matrixen 
-	cv::Vec<float, 5> _k;		// Distortion-coefficienten
-	cv::Mat _srcImg;			// stores input picture
-	cv::Mat _hsvImg;			// stores picture converted to hsv
-	cv::Mat _mask;				// stores picture of color-mask
-	cv::Mat _grayImg;			// stores picture converted to grayscale
-	cv::Mat _dstImg;			// stores output pictue
+	cv::Matx33f _cameraMatrix;						// camera-matrix 
+	cv::Vec<float, 5> _distortionCoefficient;		// Distortion-coefficient
+	cv::Mat _perspectiveMatrix;						// Perspective matrix
+	cv::Mat _srcImg;								// stores input picture
+	cv::Mat _hsvImg;								// stores picture converted to hsv
+	cv::Mat _mask;									// stores picture of color-mask
+	cv::Mat _grayImg;								// stores picture converted to grayscale
+	cv::Mat _dstImg;								// stores output pictue
 
-	double _distanceRatio;
 	int _x;
 	int _y;
 	int _r;

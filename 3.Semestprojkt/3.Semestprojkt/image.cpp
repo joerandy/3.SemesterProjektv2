@@ -19,19 +19,13 @@ bool image::getImg() {
 		return false;
 	}
 
-	//while (true) {
-	//	cap >> _srcImg; // get a new frame from camera
-	//	imshow("frame", _srcImg);
-	//	if (waitKey(30) >= 0) {
-	//		break;
-	//	}
-	//}
-
 	Mat inputImg;
+	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
 	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);
 	
-	undistort(inputImg, _srcImg, _K, _k);
+	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());
 
 	return true;
 }
@@ -43,18 +37,16 @@ bool image::getCalibration(string fileName) {
 
 	for (int i = 0; i < 5; i++) {
 		myfile >> buffer;
-		_k(i) = buffer;
+		_distortionCoefficient(i) = buffer;
 	}
 	
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			myfile >> buffer;
-			_K(i, j) = buffer;
+			_cameraMatrix(i, j) = buffer;
 		}
 	}
-
-	myfile >> _distanceRatio;
-
+	
 	myfile.close();
 
 	//cout << _k << endl;
@@ -84,8 +76,6 @@ void image::maskColour() {
 	// Orange: Scalar(10, 150, 60), Scalar(25,255,200)
 	// Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
 
-	//GaussianBlur(_mask, _mask, cv::Size(9, 9), 2, 2);
-
 	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 }
 
@@ -94,7 +84,7 @@ void image::detectCircles() {
 
 	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
 
-	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0); // see opencv documentation: 15 = radius min. 30 = radius max. 
+	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
 
 	for (size_t i = 0; i < circles.size(); i++) {
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
