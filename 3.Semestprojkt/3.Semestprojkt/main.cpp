@@ -44,11 +44,7 @@ void imageTesting() {
 	img.display();
 }
 
-
-int main() {
-	//dbTesting();
-	//imageTesting();
-	//socketTesting();
+int programLoop() {
 	communication com;
 	image img;
 	com.createSoc();
@@ -93,17 +89,15 @@ int main() {
 				cout << "Exit msg recieved, breaking loop";
 			}
 		}
-		//først modtager vi cup z --V
-		//svar med ball x,y --V
-		//modtager "ball picked up" --V
-		//svar med hastighed og vinkel
-		//modtager "ball thrown"
-		//svar med success (0) false, (1) true
-		//modtager bruger input success, 0 eller 1
-		//svar med (1)
-		//modtager "new" || "exit"
 	}
 	cv::waitKey(30);
+}
+
+int main() {
+	//dbTesting();
+	//imageTesting();
+	//socketTesting();
+
 	getchar();
-	return 0;
+	return programLoop();
 }
