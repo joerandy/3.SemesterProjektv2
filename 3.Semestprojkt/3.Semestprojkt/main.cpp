@@ -9,11 +9,14 @@
 
 
 using namespace std;
-using namespace cv;
+
+string lastProcessedMsg;
+bool running = true;
+
 
 void dbTesting() {
 	database DB;
-	DB.addEntry(9099.0, 989, 99, 999999, true);
+	DB.addEntry(11.0, 12, 13, 14, false);
 
 }
 void socketTesting() {
@@ -41,14 +44,44 @@ void imageTesting() {
 	img.display();
 }
 
+
 int main() {
-	
 	//dbTesting();
+	//imageTesting();
+	//socketTesting();
+	communication com;
+	image img;
+	com.createSoc();
+	std::string recvdMsg, sendMsg;
+	int cupZ = 0;
+	int ballX, ballY;
 
-	imageTesting();
+	while (running) {
+		recvdMsg = com.recvMsg();
+		if (recvdMsg == "new") {
+			cupZ = stoi(com.recvMsg());
+			coordinates pos = img.getCoordinates();
+			sendMsg = "(" + to_string(pos.x) + "," + to_string(pos.y) + ")";
+			recvdMsg = com.recvMsg();
+			if (recvdMsg != "ball picked up") {
+				cout << "Unexpected reply from client\n";
 
+			}
+			
+
+		}
+		//først modtager vi cup z
+		//svar med ball x,y 
+		//modtager "ball picked up"
+		//svar med hastighed og vinkel
+		//modtager "ball thrown"
+		//svar med success (0) false, (1) true
+		//modtager bruger input success, 0 eller 1
+		//svar med (1)
+		//modtager "new" || "exit"
+	}
 	socketTesting();
-	waitKey(30);
+	cv::waitKey(30);
 	getchar();
 	return 0;
 }

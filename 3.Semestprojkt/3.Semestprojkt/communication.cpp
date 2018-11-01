@@ -71,7 +71,6 @@ void communication::sendMsg(string message) {
 }
 
 string communication::recvMsg() {
-
 	const int buffLen = 512;
 	char recvBuf[buffLen];
 	int iResult = recv(_newSocket, recvBuf, buffLen, 0);       // recv
