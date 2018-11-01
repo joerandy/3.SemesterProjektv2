@@ -53,7 +53,15 @@ int programLoop() {
 	bool recvdSuccess;
 	int cupZ = 0;
 	int ballX, ballY;
-
+		//foerst modtager vi cup z --V
+		//svar med ball x,y --V
+		//modtager "ball picked up" --V
+		//svar med hastighed og vinkel
+		//modtager "ball thrown"
+		//svar med success (0) false, (1) true
+		//modtager bruger input success, 0 eller 1
+		//svar med (1)
+		//modtager "new" || "exit"
 	while (running) {
 		recvdMsg = com.recvMsg();
 		if (recvdMsg == "new") {
