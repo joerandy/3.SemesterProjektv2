@@ -53,6 +53,7 @@ int main() {
 	image img;
 	com.createSoc();
 	std::string recvdMsg, sendMsg;
+	bool recvdSuccess;
 	int cupZ = 0;
 	int ballX, ballY;
 
@@ -61,18 +62,40 @@ int main() {
 		if (recvdMsg == "new") {
 			cupZ = stoi(com.recvMsg());
 			coordinates pos = img.getCoordinates();
-			sendMsg = "(" + to_string(pos.x) + "," + to_string(pos.y) + ")";
+			com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
 			recvdMsg = com.recvMsg();
 			if (recvdMsg != "ball picked up") {
 				cout << "Unexpected reply from client\n";
-
+				return 1;
 			}
-			
-
+			com.sendMsg("hej jeg er en placeholder"); //send vinkel og hastighed
+			recvdMsg = com.recvMsg();
+			if (recvdMsg != "ball thrown") {
+				cout << "Unexpected reply from client\n";
+				return 1;
+			}
+			com.sendMsg("hej jeg er en placeholder"); //send success, ball i cup detection
+			recvdMsg = com.recvMsg();
+			if (recvdMsg == "1") {
+				recvdSuccess = true;
+			}
+			else if (recvdMsg == "0") {
+				recvdSuccess = false;
+			}
+			else {
+				cout << "Unexpected message recieved";
+				return 1;
+			}
+			com.sendMsg("(1)");
+			recvdMsg = com.recvMsg();
+			if (recvdMsg == "exit") {
+				running = false;
+				cout << "Exit msg recieved, breaking loop";
+			}
 		}
-		//først modtager vi cup z
-		//svar med ball x,y 
-		//modtager "ball picked up"
+		//først modtager vi cup z --V
+		//svar med ball x,y --V
+		//modtager "ball picked up" --V
 		//svar med hastighed og vinkel
 		//modtager "ball thrown"
 		//svar med success (0) false, (1) true
@@ -80,7 +103,6 @@ int main() {
 		//svar med (1)
 		//modtager "new" || "exit"
 	}
-	socketTesting();
 	cv::waitKey(30);
 	getchar();
 	return 0;
