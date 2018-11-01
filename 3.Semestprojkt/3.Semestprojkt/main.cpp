@@ -34,7 +34,8 @@ void socketTesting() {
 
 void imageTesting() {
 	image img;
-	img.getCalibration("input.xml");	// ændre til .txt
+	img.getCalibration("input.txt");
+
 	img.getImg();
 	img.convertHSV();
 	img.maskColour();

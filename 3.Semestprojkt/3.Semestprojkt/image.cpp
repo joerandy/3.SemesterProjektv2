@@ -7,7 +7,6 @@ using namespace cv;
 image::image() {
 }
 
-
 image::~image() {
 }
 
@@ -23,9 +22,10 @@ bool image::getImg() {
 	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
 	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
-	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);
 	
-	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());
+	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
+	
+	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
 
 	return true;
 }
@@ -35,31 +35,35 @@ bool image::getCalibration(string fileName) {
 	ifstream myfile;
 	myfile.open(fileName);
 
+	if (myfile.fail()) {							// checks for iostate failbit flag
+		cout << "Failed to load file!" << endl;
+		return false;
+	}
+	
+	// the first 5 floats are the distortion coefficient
 	for (int i = 0; i < 5; i++) {
 		myfile >> buffer;
 		_distortionCoefficient(i) = buffer;
 	}
-	
+	//cout << _distortionCoefficient << endl;
+
+	// the next 9 floats are the camera matrix
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			myfile >> buffer;
 			_cameraMatrix(i, j) = buffer;
 		}
 	}
+	//cout << _cameraMatrix << endl;
+
+	// the next ... 
+	// TO DO!
 	
+
+
 	myfile.close();
 
-	//cout << _k << endl;
-	//cout << _K << endl;
-
-	//Mat testImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
-	//Mat resultImg;
-	//undistort(testImg, resultImg, _K, _k);
-
-	//imshow("whaaaat", resultImg);
-	//waitKey(0);
-
-	return 0;
+	return true;
 }
 
 void image::convertHSV() {
