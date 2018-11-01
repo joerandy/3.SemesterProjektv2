@@ -89,13 +89,15 @@ void image::maskColour() {
 	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 }
 
-void image::detectCircles() {
+vector<cv::Vec3f> image::detectCircles() {
 	vector<Vec3f> circles;
 
 	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
 
 	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 0, 0); // see opencv documentation: 15 = radius min. 30 = radius max. 
 
+	return circles;
+	/*
 	for (size_t i = 0; i < circles.size(); i++) {
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 		int radius = cvRound(circles[i][2]);
@@ -110,6 +112,7 @@ void image::detectCircles() {
 		_y = center.y;
 		_r = radius;
 		_d = diameter;
+		*/
 	}
 }
 
