@@ -112,8 +112,8 @@ vector<cv::Vec3f> image::detectCircles() {
 		_y = center.y;
 		_r = radius;
 		_d = diameter;
-		
-	}*/
+		*/
+	}
 }
 
 coordinates image::getCoordinates() {
