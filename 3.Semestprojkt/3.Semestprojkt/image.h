@@ -23,7 +23,7 @@ public:
 	void convertHSV();							// converts to HSV
 	void maskColour();							// creates mask
 	void convertGray();							// converts to grayscale
-	void detectCircles();						// deetect circles
+	std::vector<cv::Vec3f> detectCircles();						// deetect circles
 	coordinates getCoordinates();			
 	void display();								// display picture
 private:
