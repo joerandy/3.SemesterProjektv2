@@ -33,7 +33,7 @@ bool image::getImg() {
 bool image::getCalibration(string fileName) {
 	float buffer;
 	ifstream myfile;
-	myfile.open("example.txt");
+	myfile.open(fileName);
 
 	for (int i = 0; i < 5; i++) {
 		myfile >> buffer;
