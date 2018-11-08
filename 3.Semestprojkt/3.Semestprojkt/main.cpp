@@ -35,7 +35,6 @@ void socketTesting() {
 void imageTesting() {
 	image img;
 	img.getCalibration("input.txt");
-
 	img.getImg();
 	img.convertHSV();
 	img.maskColour();
@@ -104,9 +103,10 @@ int programLoop() {
 
 int main() {
 	//dbTesting();
-	//imageTesting();
+	imageTesting();
 	//socketTesting();
 
 	getchar();
-	return programLoop();
+	//return programLoop();
+	return 0;
 }

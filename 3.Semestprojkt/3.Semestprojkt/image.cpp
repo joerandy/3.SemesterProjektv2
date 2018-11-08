@@ -10,6 +10,46 @@ image::image() {
 image::~image() {
 }
 
+bool image::getCalibration(string fileName) {
+	float buffer;
+	ifstream myfile;
+	myfile.open(fileName);
+
+	if (myfile.fail()) {							// checks for iostate failbit flag
+		cout << "Failed to load file!" << endl;
+		return false;
+	}
+
+	// the first 5 floats are the distortion coefficient
+	for (int i = 0; i < 5; i++) {
+		myfile >> buffer;
+		_distortionCoefficient(i) = buffer;
+	}
+	cout << _distortionCoefficient << endl;
+
+	// the next 9 floats are the camera matrix
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			myfile >> buffer;
+			_cameraMatrix(i, j) = buffer;
+		}
+	}
+	cout << _cameraMatrix << endl;
+
+	// the next  9 floats are the perspective matrix
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			myfile >> buffer;
+			_perspectiveMatrix(i, j) = buffer;
+		}
+	}
+	cout << _perspectiveMatrix << endl;
+
+	myfile.close();
+
+	return true;
+}
+
 bool image::getImg() {
 	VideoCapture cap(0); // open the default camera (0), (1) for USB
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1420);
@@ -21,7 +61,7 @@ bool image::getImg() {
 	Mat inputImg;
 	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
-	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
 	
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	
@@ -30,57 +70,21 @@ bool image::getImg() {
 	return true;
 }
 
-bool image::getCalibration(string fileName) {
-	float buffer;
-	ifstream myfile;
-	myfile.open(fileName);
-
-	if (myfile.fail()) {							// checks for iostate failbit flag
-		cout << "Failed to load file!" << endl;
-		return false;
-	}
-	
-	// the first 5 floats are the distortion coefficient
-	for (int i = 0; i < 5; i++) {
-		myfile >> buffer;
-		_distortionCoefficient(i) = buffer;
-	}
-	//cout << _distortionCoefficient << endl;
-
-	// the next 9 floats are the camera matrix
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			myfile >> buffer;
-			_cameraMatrix(i, j) = buffer;
-		}
-	}
-	//cout << _cameraMatrix << endl;
-
-	// the next ... 
-	// TO DO!
-	
-
-
-	myfile.close();
-
-	return true;
-}
-
 void image::convertHSV() {
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
 
-void image::convertGray() {
-	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
-}
-
 void image::maskColour() {
 	inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalars are found using the HSV colormap
-	// Blue: Scalar(100, 150, 0), Scalar(140, 255, 255)
-	// Orange: Scalar(10, 150, 60), Scalar(25,255,200)
-	// Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
+																	   // Blue: Scalar(100, 150, 0), Scalar(140, 255, 255)
+																	   // Orange: Scalar(10, 150, 60), Scalar(25,255,200)
+																	   // Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
 
 	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+}
+
+void image::convertGray() {
+	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
 void image::detectCircles() {

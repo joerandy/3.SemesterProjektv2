@@ -29,7 +29,7 @@ public:
 private:
 	cv::Matx33f _cameraMatrix;						// camera-matrix 
 	cv::Vec<float, 5> _distortionCoefficient;		// Distortion-coefficient
-	cv::Mat _perspectiveMatrix;						// Perspective matrix
+	cv::Matx33f _perspectiveMatrix;						// Perspective matrix
 	cv::Mat _srcImg;								// stores input picture
 	cv::Mat _hsvImg;								// stores picture converted to hsv
 	cv::Mat _mask;									// stores picture of color-mask
