@@ -11,7 +11,7 @@ image::~image() {
 }
 
 bool image::getCalibration(string fileName) {
-	float buffer;
+	//float buffer;
 	ifstream myfile;
 	myfile.open(fileName);
 
@@ -22,28 +22,25 @@ bool image::getCalibration(string fileName) {
 
 	// the first 5 floats are the distortion coefficient
 	for (int i = 0; i < 5; i++) {
-		myfile >> buffer;
-		_distortionCoefficient(i) = buffer;
+		myfile >> _distortionCoefficient(i);
 	}
-	cout << _distortionCoefficient << endl;
+	//cout << _distortionCoefficient << endl;
 
 	// the next 9 floats are the camera matrix
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			myfile >> buffer;
-			_cameraMatrix(i, j) = buffer;
+			myfile >> _cameraMatrix(i, j);
 		}
 	}
-	cout << _cameraMatrix << endl;
+	//cout << _cameraMatrix << endl;
 
 	// the next  9 floats are the perspective matrix
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			myfile >> buffer;
-			_perspectiveMatrix(i, j) = buffer;
+			myfile >> _perspectiveMatrix(i, j);
 		}
 	}
-	cout << _perspectiveMatrix << endl;
+	//cout << _perspectiveMatrix << endl;
 
 	myfile.close();
 
@@ -83,23 +80,17 @@ void image::maskColour() {
 	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 }
 
-<<<<<<< HEAD
 void image::convertGray() {
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
-void image::detectCircles() {
-=======
 std::vector<cv::Vec3f> image::detectCircles() {
->>>>>>> 133bf26f2dfcea26da78977997e1530bca57258d
 	vector<Vec3f> circles;
 
 	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
 
-	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 50, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
-	
-	return circles;
-	/*
+	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 30, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
+
 	for (size_t i = 0; i < circles.size(); i++) {
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 		int radius = cvRound(circles[i][2]);
@@ -114,7 +105,8 @@ std::vector<cv::Vec3f> image::detectCircles() {
 		_y = center.y;
 		_r = radius;
 		_d = diameter;
-	}*/
+	 }
+	return circles;
 }
 
 coordinates image::getCoordinates() {

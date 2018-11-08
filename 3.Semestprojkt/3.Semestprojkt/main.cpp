@@ -32,9 +32,15 @@ void socketTesting() {
 	com.close();
 }
 
-void imageTesting() {
+bool imageTesting() {
 	image img;
-	img.getCalibration("input.txt");
+	if (img.getCalibration("input.txt")) {
+		cout << "Calibration data loaded!" << endl;
+	}
+	else {
+		cout << "Error in loading calibration data..." << endl;
+		return false;
+	}
 	img.getImg();
 	img.convertHSV();
 	img.maskColour();
@@ -42,6 +48,7 @@ void imageTesting() {
 	img.detectCircles();
 	////coordinates pos = img.getCoordinates();
 	img.display();
+	return true;
 }
 
 int programLoop() {
@@ -104,7 +111,9 @@ int programLoop() {
 int main() {
 	//dbTesting();
 	imageTesting();
-	//socketTesting();
+	socketTesting();
+
+	//MØLLERS SOCKET TIL AT SENDE!!!
 
 	getchar();
 	//return programLoop();
