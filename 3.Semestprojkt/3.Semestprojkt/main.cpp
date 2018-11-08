@@ -43,7 +43,7 @@ bool imageTesting() {
 	}
 	img.getImg();
 	img.convertHSV();
-	img.maskColour();
+	img.maskColour("ball");
 	img.convertGray();
 	img.detectCircles();
 	////coordinates pos = img.getCoordinates();
@@ -52,6 +52,7 @@ bool imageTesting() {
 }
 
 int programLoop() {
+	cout << "Program Loop called" << endl;
 	communication com;
 	image img;
 	com.createSoc();
@@ -59,6 +60,7 @@ int programLoop() {
 	bool recvdSuccess;
 	int cupZ = 0;
 	int ballX, ballY;
+	bool running = true;
 		//foerst modtager vi cup z --V
 		//svar med ball x,y --V
 		//modtager "ball picked up" --V
@@ -110,11 +112,9 @@ int programLoop() {
 
 int main() {
 	//dbTesting();
-	imageTesting();
-	socketTesting();
-
-	//MØLLERS SOCKET TIL AT SENDE!!!
-
+	//imageTesting();
+	//socketTesting();
+	programLoop();
 	getchar();
 	//return programLoop();
 	return 0;

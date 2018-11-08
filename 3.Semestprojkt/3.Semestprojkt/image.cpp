@@ -11,7 +11,6 @@ image::~image() {
 }
 
 bool image::getCalibration(string fileName) {
-	//float buffer;
 	ifstream myfile;
 	myfile.open(fileName);
 
@@ -48,8 +47,8 @@ bool image::getCalibration(string fileName) {
 }
 
 bool image::getImg() {
-	VideoCapture cap(0); // open the default camera (0), (1) for USB
-	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1420);
+	VideoCapture cap(1); // open the default camera (0), (1) for USB
+	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
 	if (!cap.isOpened()) {  // check if we succeeded
 		return false;
@@ -58,12 +57,12 @@ bool image::getImg() {
 	Mat inputImg;
 	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
-	inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
 	
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
-
+	
 	return true;
 }
 
@@ -71,13 +70,19 @@ void image::convertHSV() {
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
 
-void image::maskColour() {
-	inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalars are found using the HSV colormap
-																	   // Blue: Scalar(100, 150, 0), Scalar(140, 255, 255)
-																	   // Orange: Scalar(10, 150, 60), Scalar(25,255,200)
-																	   // Hvid: Scalar(0, 0, 60), Scalar(180, 30, 255)
+void image::maskColour(string object) {
+	// Scalars are found using the HSV colormap
+	// must be called when looking for either "ball" or "cup"
+	if (object == "ball") {
+		inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask);
 
-	bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+	}
+	else if (object == "cup") {
+		inRange(_hsvImg, Scalar(0, 0, 60), Scalar(180, 30, 255), _mask);
+
+		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+	}
 }
 
 void image::convertGray() {
@@ -87,10 +92,10 @@ void image::convertGray() {
 std::vector<cv::Vec3f> image::detectCircles() {
 	vector<Vec3f> circles;
 
-	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2);
+	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2); // 5,5 
 
-	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 30, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
-
+	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 20, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
+	
 	for (size_t i = 0; i < circles.size(); i++) {
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 		int radius = cvRound(circles[i][2]);

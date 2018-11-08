@@ -6,7 +6,6 @@ communication::communication() {
 
 }
 
-
 communication::~communication() {
 
 }

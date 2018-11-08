@@ -21,9 +21,9 @@ public:
 	bool getCalibration(std::string fileName);	// reads from input file
 	bool getImg();								// takes picture
 	void convertHSV();							// converts to HSV
-	void maskColour();							// creates mask
+	void maskColour(std::string object);		// creates mask
 	void convertGray();							// converts to grayscale
-	std::vector<cv::Vec3f> detectCircles();						// deetect circles
+	std::vector<cv::Vec3f> detectCircles();		// deetect circles
 	coordinates getCoordinates();			
 	void display();								// display picture
 private:
