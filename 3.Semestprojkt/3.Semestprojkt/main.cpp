@@ -23,7 +23,7 @@ void socketTesting() {
 	std::string testString = "test";
 	communication com;
 	com.createSoc();
-	com.sendMsg("(1)");
+	com.sendMsg("(1)\n");
 	std::string rcvd = com.recvMsg();
 	std::cout << rcvd;
 	if (rcvd == testString) {
@@ -61,7 +61,7 @@ int programLoop() {
 	int cupZ = 0;
 	int ballX, ballY;
 	bool running = true;
-		//foerst modtager vi strengen "new" og sender intet svar men sender lige herefter cup z --V
+		//foerst modtager vi strengen "new" og sender intet svar men modtager lige herefter cup z --V
 		//svar med ball x,y --V
 		//modtager "ball picked up" --V
 		//svar med vinkel, hastighed, acceleration 
