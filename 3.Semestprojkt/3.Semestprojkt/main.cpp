@@ -2,7 +2,7 @@
 
 #include <jdbc\mysql_driver.h>
 #include <jdbc\cppconn\config.h>
-
+#include <cmath.h>
 #include "communication.h"
 #include "database.h"
 #include "image.h"
@@ -64,7 +64,7 @@ int programLoop() {
 		//foerst modtager vi strengen "new" og sender intet svar men sender lige herefter cup z --V
 		//svar med ball x,y --V
 		//modtager "ball picked up" --V
-		//svar med hastighed og vinkel
+		//svar med vinkel, hastighed, acceleration 
 		//modtager "ball thrown"
 		//svar med success (0) false, (1) true
 		//modtager bruger input success, 0 eller 1
@@ -110,6 +110,10 @@ int programLoop() {
 		}
 	}
 	cv::waitKey(30);
+}
+
+double calcWrist1ToTCPangle(float h, float d5, float d6) {
+	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
 }
 
 int main() {
