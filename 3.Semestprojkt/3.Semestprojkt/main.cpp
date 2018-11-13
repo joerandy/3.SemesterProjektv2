@@ -2,7 +2,7 @@
 
 #include <jdbc\mysql_driver.h>
 #include <jdbc\cppconn\config.h>
-
+#include <cmath>
 #include "communication.h"
 #include "database.h"
 #include "image.h"
@@ -23,7 +23,7 @@ void socketTesting() {
 	std::string testString = "test";
 	communication com;
 	com.createSoc();
-	com.sendMsg("(1)");
+	com.sendMsg("(1)\n");
 	std::string rcvd = com.recvMsg();
 	std::cout << rcvd;
 	if (rcvd == testString) {
@@ -61,10 +61,10 @@ int programLoop() {
 	int cupZ = 0;
 	int ballX, ballY;
 	bool running = true;
-		//foerst modtager vi strengen "new" og sender intet svar men sender lige herefter cup z --V
+		//foerst modtager vi strengen "new" og sender intet svar men modtager lige herefter cup z --V
 		//svar med ball x,y --V
 		//modtager "ball picked up" --V
-		//svar med hastighed og vinkel
+		//svar med vinkel, hastighed, acceleration 
 		//modtager "ball thrown"
 		//svar med success (0) false, (1) true
 		//modtager bruger input success, 0 eller 1
@@ -74,7 +74,7 @@ int programLoop() {
 		recvdMsg = com.recvMsg();
 		if (recvdMsg == "new") {
 			cupZ = stoi(com.recvMsg());
-			coordinates pos = img.getCoordinates();
+			coordinates pos = img.getBallCoordinates();
 			com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
 			recvdMsg = com.recvMsg();
 			if (recvdMsg != "ball picked up") {
@@ -100,6 +100,8 @@ int programLoop() {
 				return 1;
 			}
 			com.sendMsg("(1)");
+
+			//save data to DB here
 			recvdMsg = com.recvMsg();
 			if (recvdMsg == "exit") {
 				running = false;
@@ -108,6 +110,11 @@ int programLoop() {
 		}
 	}
 	cv::waitKey(30);
+}
+
+//simon bad om den her metode, ikke i brug endnu 
+double calcWrist1ToTCPangle(float h, float d5, float d6) {
+	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
 }
 
 int main() {

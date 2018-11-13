@@ -57,6 +57,9 @@ bool image::getImg() {
 	//cap >> inputImg; // get a new frame from camera
 	Mat inputImg;
 	Mat undistImg;
+	cap >> inputImg; // get a new frame from camera
+	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff", 1);
+
 	inputImg = imread("C:/Users/rasmu/Desktop/img1.tiff");
 
 	//imshow("The captured image", inputImg);
@@ -151,6 +154,23 @@ coordinates image::getCoordinates() {
 	pos.x = _x;
 	pos.y = _y;
 	return pos;
+}
+
+coordinates image::getBallCoordinates()
+{
+	if (getCalibration("input.txt")) {
+		cout << "Calibration data loaded!" << endl;
+	}
+	else {
+		cout << "Error in loading calibration data..." << endl;
+	}
+
+	getImg();
+	convertHSV();
+	maskColour("ball");
+	convertGray();
+	detectCircles();
+	return getCoordinates();
 }
 
 void image::display() {
