@@ -2,7 +2,7 @@
 
 #include <jdbc\mysql_driver.h>
 #include <jdbc\cppconn\config.h>
-#include <cmath.h>
+#include <cmath>
 #include "communication.h"
 #include "database.h"
 #include "image.h"
