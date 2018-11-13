@@ -86,7 +86,7 @@ void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
 	if (object == "ball") {
-		inRange(_hsvImg, Scalar(30, 98, 9), Scalar(65, 100, 55), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
+		inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 
