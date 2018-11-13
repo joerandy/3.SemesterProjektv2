@@ -23,14 +23,15 @@ public:
 	void convertHSV();							// converts to HSV
 	void maskColour(std::string object);		// creates mask
 	void convertGray();							// converts to grayscale
-	std::vector<cv::Vec3f> detectCircles();		// deetect circles
+	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
 	coordinates getCoordinates();
 	coordinates getBallCoordinates();
 	void display();								// display picture
+
 private:
 	cv::Matx33f _cameraMatrix;						// camera-matrix 
 	cv::Vec<float, 5> _distortionCoefficient;		// Distortion-coefficient
-	cv::Matx33f _perspectiveMatrix;						// Perspective matrix
+	cv::Matx33f _perspectiveMatrix;					// Perspective matrix
 	cv::Mat _srcImg;								// stores input picture
 	cv::Mat _hsvImg;								// stores picture converted to hsv
 	cv::Mat _mask;									// stores picture of color-mask

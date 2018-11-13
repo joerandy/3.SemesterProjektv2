@@ -43,9 +43,9 @@ bool imageTesting() {
 	}
 	img.getImg();
 	img.convertHSV();
-	img.maskColour("ball");
+	img.maskColour("cup");
 	img.convertGray();
-	img.detectCircles();
+	img.detectCircles("cup");
 	////coordinates pos = img.getCoordinates();
 	img.display();
 	return true;
@@ -119,9 +119,10 @@ double calcWrist1ToTCPangle(float h, float d5, float d6) {
 
 int main() {
 	//dbTesting();
-	//imageTesting();
+	imageTesting();
 	//socketTesting();
-	programLoop();
+	//programLoop();
+
 	getchar();
 	//return programLoop();
 	return 0;
