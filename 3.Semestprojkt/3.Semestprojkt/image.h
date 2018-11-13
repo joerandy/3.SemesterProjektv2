@@ -24,7 +24,8 @@ public:
 	void maskColour(std::string object);		// creates mask
 	void convertGray();							// converts to grayscale
 	std::vector<cv::Vec3f> detectCircles();		// deetect circles
-	coordinates getCoordinates();			
+	coordinates getCoordinates();
+	coordinates getBallCoordinates();
 	void display();								// display picture
 private:
 	cv::Matx33f _cameraMatrix;						// camera-matrix 

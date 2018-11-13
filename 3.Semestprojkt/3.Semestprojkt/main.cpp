@@ -74,7 +74,7 @@ int programLoop() {
 		recvdMsg = com.recvMsg();
 		if (recvdMsg == "new") {
 			cupZ = stoi(com.recvMsg());
-			coordinates pos = img.getCoordinates();
+			coordinates pos = img.getBallCoordinates();
 			com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
 			recvdMsg = com.recvMsg();
 			if (recvdMsg != "ball picked up") {
@@ -100,6 +100,8 @@ int programLoop() {
 				return 1;
 			}
 			com.sendMsg("(1)");
+
+			//save data to DB here
 			recvdMsg = com.recvMsg();
 			if (recvdMsg == "exit") {
 				running = false;

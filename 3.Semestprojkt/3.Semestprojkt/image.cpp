@@ -57,7 +57,7 @@ bool image::getImg() {
 	Mat inputImg;
 	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
-	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff", 1);
 	
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	
@@ -119,6 +119,23 @@ coordinates image::getCoordinates() {
 	pos.x = _x;
 	pos.y = _y;
 	return pos;
+}
+
+coordinates image::getBallCoordinates()
+{
+	if (getCalibration("input.txt")) {
+		cout << "Calibration data loaded!" << endl;
+	}
+	else {
+		cout << "Error in loading calibration data..." << endl;
+	}
+
+	getImg();
+	convertHSV();
+	maskColour("ball");
+	convertGray();
+	detectCircles();
+	return getCoordinates();
 }
 
 void image::display() {
