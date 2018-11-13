@@ -18,18 +18,18 @@ class image
 public:
 	image();
 	~image();
-	bool getCalibration(std::string fileName);	// reads from input file
-	bool getImg();								// takes picture
-	void convertHSV();							// converts to HSV
-	void maskColour(std::string object);		// creates mask
-	void convertGray();							// converts to grayscale
-	std::vector<cv::Vec3f> detectCircles();		// deetect circles
+	bool getCalibration(std::string fileName);						// reads from input file
+	bool getImg();													// takes picture
+	void convertHSV();												// converts to HSV
+	void maskColour(std::string object);							// creates mask
+	void convertGray();												// converts to grayscale
+	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
 	coordinates getCoordinates();			
-	void display();								// display picture
+	void display();													// display picture
 private:
 	cv::Matx33f _cameraMatrix;						// camera-matrix 
 	cv::Vec<float, 5> _distortionCoefficient;		// Distortion-coefficient
-	cv::Matx33f _perspectiveMatrix;						// Perspective matrix
+	cv::Matx33f _perspectiveMatrix;					// Perspective matrix
 	cv::Mat _srcImg;								// stores input picture
 	cv::Mat _hsvImg;								// stores picture converted to hsv
 	cv::Mat _mask;									// stores picture of color-mask

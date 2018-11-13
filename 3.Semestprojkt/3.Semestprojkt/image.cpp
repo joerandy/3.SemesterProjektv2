@@ -47,55 +47,87 @@ bool image::getCalibration(string fileName) {
 }
 
 bool image::getImg() {
-	VideoCapture cap(1); // open the default camera (0), (1) for USB
-	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
-	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-	if (!cap.isOpened()) {  // check if we succeeded
-		return false;
-	}
+	//VideoCapture cap(1); // open the default camera (0), (1) for USB
+	//cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
+	//cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+	//if (!cap.isOpened()) {  // check if we succeeded
+	//	return false;
+	//}
 
+	//cap >> inputImg; // get a new frame from camera
 	Mat inputImg;
 	Mat undistImg;
-	cap >> inputImg; // get a new frame from camera
-	//inputImg = imread("C:/Users/rasmu/Dropbox/RobTek/3. Semester/Semesterprojekt/semesterprojekt/Basler10.tiff", 1);
+	inputImg = imread("C:/Users/rasmu/Desktop/img1.tiff");
+
+	//imshow("The captured image", inputImg);
+	//waitKey(0);
 	
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	
+	//imshow("Undistorted image", undistImg);
+	//waitKey(0);
+
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
 	
+	//imshow("warped image", _srcImg);
+	//waitKey(0);
+
 	return true;
 }
 
-void image::convertHSV() {
+void image::convertHSV() {			// Hue range is [0,179], Saturation range is [0,255] and Value range is [0,255]
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
+
+	//imshow("HSV image", _hsvImg);
+	//waitKey(0);
 }
 
 void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
 	if (object == "ball") {
-		inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask);
+		inRange(_hsvImg, Scalar(30, 98, 9), Scalar(65, 100, 55), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+
+		//imshow("masked image", _dstImg);
+		//waitKey(0);
 	}
 	else if (object == "cup") {
-		inRange(_hsvImg, Scalar(0, 0, 60), Scalar(180, 30, 255), _mask);
+		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(179, 255, 255), _mask); // Scalar(0, 0, 0), Scalar(100, 150, 255)
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
+
+		//imshow("masked image", _dstImg);
+		//waitKey(0);
 	}
+
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2));
+
+	morphologyEx(_dstImg, _dstImg, MORPH_OPEN, kernel);
+
+	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
 }
 
 void image::convertGray() {
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
-std::vector<cv::Vec3f> image::detectCircles() {
+std::vector<cv::Vec3f> image::detectCircles(string object) {
 	vector<Vec3f> circles;
 
-	GaussianBlur(_grayImg, _grayImg, cv::Size(9, 9), 2, 2); // 5,5 
+	// depending of the object we are looking for (ball or cup), we look for different sizes.
+	if (object == "ball") {
+		GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
 
-	HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 20, 18, 22); // see opencv documentation: 15 = radius min. 30 = radius max. 
-	
+		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
+	}
+	else if (object == "cup") {
+		medianBlur(_grayImg, _grayImg, 5);
+
+		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);  
+	}
+
 	for (size_t i = 0; i < circles.size(); i++) {
 		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 		int radius = cvRound(circles[i][2]);
