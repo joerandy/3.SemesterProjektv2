@@ -112,6 +112,7 @@ int programLoop() {
 	cv::waitKey(30);
 }
 
+//simon bad om den her metode, ikke i brug endnu 
 double calcWrist1ToTCPangle(float h, float d5, float d6) {
 	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
 }
