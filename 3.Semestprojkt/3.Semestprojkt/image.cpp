@@ -10,6 +10,7 @@ image::image() {
 image::~image() {
 }
 
+//called from detectCircles(), no need to call externally
 bool image::getCalibration(string fileName) {
 	ifstream myfile;
 	myfile.open(fileName);
@@ -18,12 +19,10 @@ bool image::getCalibration(string fileName) {
 		cout << "Failed to load file!" << endl;
 		return false;
 	}
-
 	// the first 5 floats are the distortion coefficient
 	for (int i = 0; i < 5; i++) {
 		myfile >> _distortionCoefficient(i);
 	}
-	//cout << _distortionCoefficient << endl;
 
 	// the next 9 floats are the camera matrix
 	for (int i = 0; i < 3; i++) {
@@ -31,21 +30,17 @@ bool image::getCalibration(string fileName) {
 			myfile >> _cameraMatrix(i, j);
 		}
 	}
-	//cout << _cameraMatrix << endl;
-
 	// the next  9 floats are the perspective matrix
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			myfile >> _perspectiveMatrix(i, j);
 		}
 	}
-	//cout << _perspectiveMatrix << endl;
-
 	myfile.close();
-
 	return true;
 }
 
+//called from detectCircles, no longer need to call externally
 bool image::getImg() {
 	//VideoCapture cap(1); // open the default camera (0), (1) for USB
 	//cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
@@ -54,37 +49,23 @@ bool image::getImg() {
 	//	return false;
 	//}
 
-	//cap >> inputImg; // get a new frame from camera
 	Mat inputImg;
 	Mat undistImg;
-	cap >> inputImg; // get a new frame from camera
-	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff", 1);
+//	cap >> inputImg; // get a new frame from camera
 
-	inputImg = imread("C:/Users/rasmu/Desktop/img1.tiff");
-
-	//imshow("The captured image", inputImg);
-	//waitKey(0);
-	
+	inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff");  //for testing without USB camera connected
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
-	
-	//imshow("Undistorted image", undistImg);
-	//waitKey(0);
-
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
-	
-	//imshow("warped image", _srcImg);
-	//waitKey(0);
-
+	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 	return true;
 }
 
+//deprecated, merged into getImg() -- can be removed
 void image::convertHSV() {			// Hue range is [0,179], Saturation range is [0,255] and Value range is [0,255]
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
-
-	//imshow("HSV image", _hsvImg);
-	//waitKey(0);
 }
 
+//called from detectCircles() so no longer need to call it externally
 void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
@@ -112,11 +93,15 @@ void image::maskColour(string object) {
 	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
 }
 
+//deprecated, merged into detectCircles() -- can be removed
 void image::convertGray() {
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
 std::vector<cv::Vec3f> image::detectCircles(string object) {
+	getImg();
+	maskColour(object);
+	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 	vector<Vec3f> circles;
 
 	// depending of the object we are looking for (ball or cup), we look for different sizes.
@@ -127,7 +112,6 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	}
 	else if (object == "cup") {
 		medianBlur(_grayImg, _grayImg, 5);
-
 		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);  
 	}
 
@@ -149,30 +133,22 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	return circles;
 }
 
-coordinates image::getCoordinates() {
-	coordinates pos;
-	pos.x = _x;
-	pos.y = _y;
-	return pos;
-}
-
-coordinates image::getBallCoordinates()
-{
+//replaces getBallCoordinates() and getCupCoordinates()
+coordinates image::getCoordinates(string object) {
 	if (getCalibration("input.txt")) {
 		cout << "Calibration data loaded!" << endl;
 	}
 	else {
 		cout << "Error in loading calibration data..." << endl;
 	}
-
-	getImg();
-	convertHSV();
-	maskColour("ball");
-	convertGray();
-	detectCircles();
-	return getCoordinates();
+	//getImg();
+	//convertHSV();
+	//maskColour("ball");
+	detectCircles("object");
+	return coordinates{ _x, _y };
 }
 
+//method for displaying image at a given time, for testing purposes
 void image::display() {
 	imshow("Display _dst", _dstImg);
 	waitKey(0);

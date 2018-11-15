@@ -116,13 +116,19 @@ int programLoop() {
 double calcWrist1ToTCPangle(float h, float d5, float d6) {
 	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
 }
+void getBallCoordinatesTest() {
+	image img;
+	coordinates pos;
+	pos = img.getBallCoordinates();
+	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
+}
 
 int main() {
 	//dbTesting();
-	imageTesting();
+	//imageTesting();
 	//socketTesting();
 	//programLoop();
-
+	getBallCoordinatesTest();
 	getchar();
 	//return programLoop();
 	return 0;
