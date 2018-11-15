@@ -40,7 +40,7 @@ bool image::getCalibration(string fileName) {
 	return true;
 }
 
-//called from detectCircles, no longer need to call externally
+//called from detectCircles, no need to call externally
 bool image::getImg() {
 	//VideoCapture cap(1); // open the default camera (0), (1) for USB
 	//cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
@@ -60,12 +60,7 @@ bool image::getImg() {
 	return true;
 }
 
-//deprecated, merged into getImg() -- can be removed
-void image::convertHSV() {			// Hue range is [0,179], Saturation range is [0,255] and Value range is [0,255]
-	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
-}
-
-//called from detectCircles() so no longer need to call it externally
+//called from detectCircles() no need to call externally
 void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
@@ -91,6 +86,11 @@ void image::maskColour(string object) {
 	morphologyEx(_dstImg, _dstImg, MORPH_OPEN, kernel);
 
 	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
+}
+
+//deprecated, merged into getImg() -- can be removed
+void image::convertHSV() {			// Hue range is [0,179], Saturation range is [0,255] and Value range is [0,255]
+	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
 
 //deprecated, merged into detectCircles() -- can be removed

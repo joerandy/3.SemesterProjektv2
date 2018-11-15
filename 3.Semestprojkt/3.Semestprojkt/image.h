@@ -21,24 +21,22 @@ public:
 	
 	//called from detectCircles(), no need to call externally
 	bool getCalibration(std::string fileName);	// reads from input file
-	
 	//called from detectCircles, no longer need to call externally
 	bool getImg();								// takes picture
-	
-	//deprecated, merged into getImg() -- can be removed
-	void convertHSV();							// converts to HSV
-
 	//called from detectCircles() so no longer need to call it externally
 	void maskColour(std::string object);		// creates mask
-
-	//deprecated, merged into detectCircles() -- can be removed
-	void convertGray();							// converts to grayscale
-
-	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
 
 	//replaces getBallCoordinates() and getCupCoordinates(), untested with cups
 	coordinates getCoordinates(string object);
 	void display();								// display picture
+
+
+	//deprecated, merged into getImg() -- can be removed
+	void convertHSV();							// converts to HSV
+	//deprecated, merged into detectCircles() -- can be removed
+	void convertGray();							// converts to grayscale
+	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
+
 
 private:
 	cv::Matx33f _cameraMatrix;						// camera-matrix 
