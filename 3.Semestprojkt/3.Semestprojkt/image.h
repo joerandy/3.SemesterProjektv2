@@ -27,7 +27,7 @@ public:
 	void maskColour(std::string object);		// creates mask
 
 	//replaces getBallCoordinates() and getCupCoordinates(), untested with cups
-	coordinates getCoordinates(string object);
+	coordinates getCoordinates(std::string object);
 	void display();								// display picture
 
 
