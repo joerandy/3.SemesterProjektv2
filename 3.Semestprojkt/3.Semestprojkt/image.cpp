@@ -109,27 +109,35 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 		GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
 
 		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
+		_x = circles[0][0];
+		_y = circles[0][1];
+		_r = circles[0][2];
+		_d = _r * 2;
 	}
 	else if (object == "cup") {
 		medianBlur(_grayImg, _grayImg, 5);
-		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);  
+		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
+		cups = circles;
 	}
 
-	for (size_t i = 0; i < circles.size(); i++) {
-		Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-		int radius = cvRound(circles[i][2]);
-		int diameter = radius * 2;
-		cout << "Cirkel nr. " << i << "'s diameter er: " << diameter << endl;
-		cout << "Center = " << center << endl;
-		// circle center
-		circle(_dstImg, center, 3, Scalar(255, 0, 0), -1, 8, 0);
-		// circle outline
-		circle(_dstImg, center, radius, Scalar(0, 255, 0), 3, 8, 0);	// black circle around circular opbject
-		_x = center.x;
-		_y = center.y;
-		_r = radius;
-		_d = diameter;
-	 }
+	//for (size_t i = 0; i < circles.size(); i++) {
+	//	Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+	//	int radius = cvRound(circles[i][2]);
+	//	int diameter = radius * 2;
+	//	cout << "Cirkel nr. " << i << "'s diameter er: " << diameter << endl;
+	//	cout << "Center = " << center << endl;
+	//	cout << "circles[0][0] " << circles[0][0];
+	//	cout << "circles[0][1] " << circles[0][1];
+	//	cout << "circles[0][2] " << circles[0][2];
+	//	// circle center
+	//	circle(_dstImg, center, 3, Scalar(255, 0, 0), -1, 8, 0);
+	//	// circle outline
+	//	circle(_dstImg, center, radius, Scalar(0, 255, 0), 3, 8, 0);	// black circle around circular opbject
+	//	_x = center.x;
+	//	_y = center.y;
+	//	_r = radius;
+	//	_d = diameter;
+	// }
 	return circles;
 }
 
@@ -144,7 +152,7 @@ coordinates image::getCoordinates(string object) {
 	//getImg();
 	//convertHSV();
 	//maskColour("ball");
-	detectCircles("object");
+	detectCircles(object);
 	return coordinates{ _x, _y };
 }
 
@@ -152,4 +160,9 @@ coordinates image::getCoordinates(string object) {
 void image::display() {
 	imshow("Display _dst", _dstImg);
 	waitKey(0);
+}
+
+std::vector<cv::Vec3f> image::getCups()
+{
+	return cups;
 }

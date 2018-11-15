@@ -30,6 +30,7 @@ public:
 	coordinates getCoordinates(std::string object);
 	void display();								// display picture
 
+	std::vector<cv::Vec3f> getCups();
 
 	//deprecated, merged into getImg() -- can be removed
 	void convertHSV();							// converts to HSV
@@ -47,7 +48,7 @@ private:
 	cv::Mat _mask;									// stores picture of color-mask
 	cv::Mat _grayImg;								// stores picture converted to grayscale
 	cv::Mat _dstImg;								// stores output pictue
-
+	std::vector<cv::Vec3f> cups;
 	int _x;
 	int _y;
 	int _r;

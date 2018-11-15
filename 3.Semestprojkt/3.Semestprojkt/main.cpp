@@ -70,44 +70,50 @@ int programLoop() {
 		//modtager bruger input success, 0 eller 1
 		//svar med (1)
 		//modtager "new" || "exit"
-	while (running) {
-		recvdMsg = com.recvMsg();
-		if (recvdMsg == "new") {
-			cupZ = stoi(com.recvMsg());
-			coordinates pos = img.getBallCoordinates();
-			com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
+	std::vector<cv::Vec3f> cups = img.getCups();
+	for (int i = 5; i >= 0; i--) {
+		while (running) {
 			recvdMsg = com.recvMsg();
-			if (recvdMsg != "ball picked up") {
-				cout << "Unexpected reply from client\n";
-				return 1;
-			}
-			com.sendMsg("hej jeg er en placeholder"); //send vinkel og hastighed
-			recvdMsg = com.recvMsg();
-			if (recvdMsg != "ball thrown") {
-				cout << "Unexpected reply from client\n";
-				return 1;
-			}
-			com.sendMsg("hej jeg er en placeholder"); //send success, ball i cup detection
-			recvdMsg = com.recvMsg();
-			if (recvdMsg == "1") {
-				recvdSuccess = true;
-			}
-			else if (recvdMsg == "0") {
-				recvdSuccess = false;
-			}
-			else {
-				cout << "Unexpected message recieved";
-				return 1;
-			}
-			com.sendMsg("(1)");
+			if (recvdMsg == "new") {
+				cupZ = stoi(com.recvMsg());
+				coordinates pos = img.getCoordinates("ball");
+				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
+				recvdMsg = com.recvMsg();
+				if (recvdMsg != "ball picked up") {
+					cout << "Unexpected reply from client\n";
+					return 1;
+				}
 
-			//save data to DB here
-			recvdMsg = com.recvMsg();
-			if (recvdMsg == "exit") {
-				running = false;
-				cout << "Exit msg recieved, breaking loop";
+				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
+				com.sendMsg("hej jeg er en placeholder"); //send vinkel, hastighed, acceleration
+				recvdMsg = com.recvMsg();
+				if (recvdMsg != "ball thrown") {
+					cout << "Unexpected reply from client\n";
+					return 1;
+				}
+				com.sendMsg("hej jeg er en placeholder"); //send success, ball i cup detection
+				recvdMsg = com.recvMsg();
+				if (recvdMsg == "1") {
+					recvdSuccess = true;
+				}
+				else if (recvdMsg == "0") {
+					recvdSuccess = false;
+				}
+				else {
+					cout << "Unexpected message recieved";
+					return 1;
+				}
+				com.sendMsg("(1)");
+
+				//save data to DB here
+				recvdMsg = com.recvMsg();
+				if (recvdMsg == "exit") {
+					running = false;
+					cout << "Exit msg recieved, breaking loop";
+				}
 			}
 		}
+		cups.pop_back();
 	}
 	cv::waitKey(30);
 }
@@ -119,7 +125,7 @@ double calcWrist1ToTCPangle(float h, float d5, float d6) {
 void getBallCoordinatesTest() {
 	image img;
 	coordinates pos;
-	pos = img.getBallCoordinates();
+	pos = img.getCoordinates("ball");
 	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
 }
 
