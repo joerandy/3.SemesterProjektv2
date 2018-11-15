@@ -71,7 +71,7 @@ int programLoop() {
 		//svar med (1)
 		//modtager "new" || "exit"
 	std::vector<cv::Vec3f> cups = img.getCups();
-	for (int i = 5; i >= 0; i--) {
+	for (int i = 5; i >= 0 && running; i--) {
 		while (running) {
 			recvdMsg = com.recvMsg();
 			if (recvdMsg == "new") {
