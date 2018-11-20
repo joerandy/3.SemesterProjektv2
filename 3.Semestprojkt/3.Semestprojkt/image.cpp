@@ -19,6 +19,9 @@ bool image::getCalibration(string fileName) {
 		cout << "Failed to load file!" << endl;
 		return false;
 	}
+	else {
+		cout << "Calib File loaded!" << endl;
+	}
 	// the first 5 floats are the distortion coefficient
 	for (int i = 0; i < 5; i++) {
 		myfile >> _distortionCoefficient(i);
@@ -42,18 +45,18 @@ bool image::getCalibration(string fileName) {
 
 //called from detectCircles, no need to call externally
 bool image::getImg() {
-	//VideoCapture cap(1); // open the default camera (0), (1) for USB
-	//cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
-	//cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
-	//if (!cap.isOpened()) {  // check if we succeeded
-	//	return false;
-	//}
+	VideoCapture cap(1); // open the default camera (0), (1) for USB
+	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
+	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1080);
+	if (!cap.isOpened()) {  // check if we succeeded
+		return false;
+	}
 
 	Mat inputImg;
 	Mat undistImg;
-//	cap >> inputImg; // get a new frame from camera
+	cap >> inputImg; // get a new frame from camera
 
-	inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff");  //for testing without USB camera connected
+	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff");  //for testing without USB camera connected
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
@@ -103,22 +106,33 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	maskColour(object);
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 	vector<Vec3f> circles;
+		// depending of the object we are looking for (ball or cup), we look for different sizes.
+		if (object == "ball") {
+			GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
 
-	// depending of the object we are looking for (ball or cup), we look for different sizes.
-	if (object == "ball") {
-		GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
+			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
+			
+			if (!circles.empty()) {
+				_x = circles[0][0];
+				_y = circles[0][1];
+				_r = circles[0][2];
+				_d = _r * 2;
+			}
+			else {
+				cout << "No circles found..." << endl;
+			}
+		}
+		else if (object == "cup") {
+			medianBlur(_grayImg, _grayImg, 5);
+			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
 
-		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
-		_x = circles[0][0];
-		_y = circles[0][1];
-		_r = circles[0][2];
-		_d = _r * 2;
-	}
-	else if (object == "cup") {
-		medianBlur(_grayImg, _grayImg, 5);
-		HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
-		cups = circles;
-	}
+			if (!circles.empty()) {
+				cups = circles;
+			}
+			else {
+				cout << "No circles found..." << endl;
+			}
+		}
 
 	//for (size_t i = 0; i < circles.size(); i++) {
 	//	Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
@@ -141,7 +155,7 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	return circles;
 }
 
-//replaces getBallCoordinates() and getCupCoordinates()
+//replaces getBallCoordinatesTest() and getCupCoordinatesTest()
 coordinates image::getCoordinates(string object) {
 	if (getCalibration("input.txt")) {
 		cout << "Calibration data loaded!" << endl;
@@ -164,5 +178,5 @@ void image::display() {
 
 std::vector<cv::Vec3f> image::getCups()
 {
-	return cups;
+	return detectCircles("cup");
 }

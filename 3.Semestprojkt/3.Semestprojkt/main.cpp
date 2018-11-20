@@ -71,7 +71,7 @@ int programLoop() {
 		//svar med (1)
 		//modtager "new" || "exit"
 	std::vector<cv::Vec3f> cups = img.getCups();
-	for (int i = 5; i >= 0 && running; i--) {
+	for (int i = cups.size(); i >= 0 && running; i--) {
 		while (running) {
 			recvdMsg = com.recvMsg();
 			if (recvdMsg == "new") {
@@ -122,6 +122,7 @@ int programLoop() {
 double calcWrist1ToTCPangle(float h, float d5, float d6) {
 	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
 }
+
 void getBallCoordinatesTest() {
 	image img;
 	coordinates pos;
@@ -129,12 +130,28 @@ void getBallCoordinatesTest() {
 	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
 }
 
+void getCupsCoordinatesTest() {
+	image img;
+	img.getCalibration("input.txt");
+	vector<cv::Vec3f> cups = img.getCups();
+
+	for (int i = 0; i < cups.size(); i++) {
+		cout << "Cup nr. " << i << ", x: " << cups[i][0];
+		cout << " , y: " << cups[i][1];
+		cout << " , r: " << cups[i][2] << endl;
+	}
+}
+
 int main() {
 	//dbTesting();
-	//imageTesting();
 	//socketTesting();
 	//programLoop();
+
+
 	getBallCoordinatesTest();
+	getCupsCoordinatesTest();
+
+
 	getchar();
 	//return programLoop();
 	return 0;
