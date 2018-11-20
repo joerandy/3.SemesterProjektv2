@@ -126,6 +126,7 @@ double calcWrist1ToTCPangle(float h, float d5, float d6) {
 void getBallCoordinatesTest() {
 	image img;
 	coordinates pos;
+	img.getCalibration("input.txt");
 	pos = img.getCoordinates("ball");
 	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
 }
@@ -148,7 +149,7 @@ int main() {
 	//programLoop();
 
 
-	getBallCoordinatesTest();
+	//getBallCoordinatesTest();
 	getCupsCoordinatesTest();
 
 
