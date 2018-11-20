@@ -77,7 +77,7 @@ int programLoop() {
 			if (recvdMsg == "new") {
 				cupZ = stoi(com.recvMsg());
 				coordinates pos = img.getCoordinates("ball");
-				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + ")");
+				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")");
 				recvdMsg = com.recvMsg();
 				if (recvdMsg != "ball picked up") {
 					cout << "Unexpected reply from client\n";

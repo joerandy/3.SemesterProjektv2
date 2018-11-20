@@ -11,6 +11,7 @@
 struct coordinates {
 	int x;
 	int y;
+	float diameter;
 };
 
 class image
@@ -52,6 +53,6 @@ private:
 	int _x;
 	int _y;
 	int _r;
-	int _d;
+	float _d;
 };
 

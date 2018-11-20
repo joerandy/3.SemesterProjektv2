@@ -116,7 +116,7 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 				_x = circles[0][0];
 				_y = circles[0][1];
 				_r = circles[0][2];
-				_d = _r * 2;
+				_d = circles[0][2] * 2;
 			}
 			else {
 				cout << "No circles found..." << endl;
@@ -167,7 +167,7 @@ coordinates image::getCoordinates(string object) {
 	//convertHSV();
 	//maskColour("ball");
 	detectCircles(object);
-	return coordinates{ _x, _y };
+	return coordinates{ _x, _y, _d};
 }
 
 //method for displaying image at a given time, for testing purposes
