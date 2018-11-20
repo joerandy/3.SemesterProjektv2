@@ -77,7 +77,7 @@ int programLoop() {
 			recvdMsg = com.recvMsg();
 			cout << recvdMsg << endl;
 			if (recvdMsg.substr(0,3) == "new") {
-				cupZ = stof(recvdMsg.substr(3,4));
+				cupZ = stof(recvdMsg.substr(3,recvdMsg.length()));
 				coordinates pos = img.getCoordinates("ball");
 				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")");
 				recvdMsg = com.recvMsg();
