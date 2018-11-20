@@ -16,12 +16,9 @@ bool image::getCalibration(string fileName) {
 	myfile.open(fileName);
 
 	if (myfile.fail()) {							// checks for iostate failbit flag
-		cout << "Failed to load file!" << endl;
 		return false;
 	}
-	else {
-		cout << "Calib File loaded!" << endl;
-	}
+
 	// the first 5 floats are the distortion coefficient
 	for (int i = 0; i < 5; i++) {
 		myfile >> _distortionCoefficient(i);
@@ -55,7 +52,6 @@ bool image::getImg() {
 	Mat inputImg;
 	Mat undistImg;
 	cap >> inputImg; // get a new frame from camera
-
 	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff");  //for testing without USB camera connected
 	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
@@ -68,7 +64,7 @@ void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
 	if (object == "ball") {
-		inRange(_hsvImg, Scalar(10, 150, 0), Scalar(25, 255, 200), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
+		inRange(_hsvImg, Scalar(10, 250, 0), Scalar(25, 255, 200), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 
@@ -113,10 +109,10 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
 			
 			if (!circles.empty()) {
-				_x = circles[0][0];
-				_y = circles[0][1];
-				_r = circles[0][2];
-				_d = circles[0][2] * 2;
+				_x = circles[0][0]/1000;
+				_y = (circles[0][1]/1000) - 0.95;
+				_r = circles[0][2]/1000;
+				_d = (circles[0][2]/1000) * 2;
 			}
 			else {
 				cout << "No circles found..." << endl;
@@ -125,9 +121,14 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 		else if (object == "cup") {
 			medianBlur(_grayImg, _grayImg, 5);
 			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
-
 			if (!circles.empty()) {
-				cups = circles;
+				for (int i = 0; i < circles.size(); i++)
+				{
+					circles[i][0] = circles[i][0] / 1000;
+					circles[i][1] = (circles[i][1] / 1000) - 0.95;
+					circles[i][2] = circles[i][2] / 1000;
+					cups = circles;
+				}
 			}
 			else {
 				cout << "No circles found..." << endl;
@@ -178,5 +179,5 @@ void image::display() {
 
 std::vector<cv::Vec3f> image::getCups()
 {
-	return detectCircles("cup");
+	return cups;
 }

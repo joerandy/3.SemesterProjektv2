@@ -62,7 +62,7 @@ int programLoop() {
 	int ballX, ballY;
 	bool running = true;
 		//foerst modtager vi strengen "new" og sender intet svar men modtager lige herefter cup z --V
-		//svar med ball x,y --V
+		//svar med ball x,y,d --V
 		//modtager "ball picked up" --V
 		//svar med vinkel, hastighed, acceleration 
 		//modtager "ball thrown"
@@ -70,29 +70,34 @@ int programLoop() {
 		//modtager bruger input success, 0 eller 1
 		//svar med (1)
 		//modtager "new" || "exit"
+	img.getCoordinates("cup");
 	std::vector<cv::Vec3f> cups = img.getCups();
 	for (int i = cups.size(); i >= 0 && running; i--) {
 		while (running) {
 			recvdMsg = com.recvMsg();
-			if (recvdMsg == "new") {
-				cupZ = stoi(com.recvMsg());
+			cout << recvdMsg << endl;
+			if (recvdMsg.substr(0,3) == "new") {
+				cupZ = stof(recvdMsg.substr(3,4));
 				coordinates pos = img.getCoordinates("ball");
 				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")");
 				recvdMsg = com.recvMsg();
+				cout << recvdMsg << endl;
 				if (recvdMsg != "ball picked up") {
 					cout << "Unexpected reply from client\n";
 					return 1;
 				}
 
 				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
-				com.sendMsg("hej jeg er en placeholder"); //send vinkel, hastighed, acceleration
+				com.sendMsg("(5.54, 1.803, 1.644)"); //send vinkel, hastighed, acceleration
 				recvdMsg = com.recvMsg();
+				cout << recvdMsg << endl;
 				if (recvdMsg != "ball thrown") {
 					cout << "Unexpected reply from client\n";
 					return 1;
 				}
-				com.sendMsg("hej jeg er en placeholder"); //send success, ball i cup detection
+				com.sendMsg("(1)"); //send success, ball i cup detection
 				recvdMsg = com.recvMsg();
+				cout << recvdMsg << endl;
 				if (recvdMsg == "1") {
 					recvdSuccess = true;
 				}
@@ -107,6 +112,7 @@ int programLoop() {
 
 				//save data to DB here
 				recvdMsg = com.recvMsg();
+				cout << recvdMsg << endl;
 				if (recvdMsg == "exit") {
 					running = false;
 					cout << "Exit msg recieved, breaking loop";
@@ -126,14 +132,13 @@ double calcWrist1ToTCPangle(float h, float d5, float d6) {
 void getBallCoordinatesTest() {
 	image img;
 	coordinates pos;
-	img.getCalibration("input.txt");
 	pos = img.getCoordinates("ball");
 	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
 }
 
 void getCupsCoordinatesTest() {
 	image img;
-	img.getCalibration("input.txt");
+	img.getCoordinates("cup");
 	vector<cv::Vec3f> cups = img.getCups();
 
 	for (int i = 0; i < cups.size(); i++) {
@@ -150,10 +155,10 @@ int main() {
 
 
 	//getBallCoordinatesTest();
-	getCupsCoordinatesTest();
+	//getCupsCoordinatesTest();
 
 
 	getchar();
-	//return programLoop();
+	return programLoop();
 	return 0;
 }

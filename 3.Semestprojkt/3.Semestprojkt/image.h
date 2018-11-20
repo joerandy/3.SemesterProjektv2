@@ -9,8 +9,8 @@
 #include <opencv2/videoio.hpp>
 
 struct coordinates {
-	int x;
-	int y;
+	float x;
+	float y;
 	float diameter;
 };
 
@@ -50,9 +50,9 @@ private:
 	cv::Mat _grayImg;								// stores picture converted to grayscale
 	cv::Mat _dstImg;								// stores output pictue
 	std::vector<cv::Vec3f> cups;
-	int _x;
-	int _y;
-	int _r;
+	float _x;
+	float _y;
+	float _r;
 	float _d;
 };
 

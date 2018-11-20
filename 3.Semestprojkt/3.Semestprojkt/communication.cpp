@@ -90,6 +90,7 @@ string communication::recvMsg() {
 			}
 		}
 		string message(recvBuf);
+		
 		return message;
 	}
 	return "Failure to recieve message";
