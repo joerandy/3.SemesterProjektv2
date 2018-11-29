@@ -39,7 +39,6 @@ public:
 	void convertGray();							// converts to grayscale
 	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
 
-
 private:
 	cv::Mat _inputImg;								// input image
 	cv::Matx33f _cameraMatrix;						// camera-matrix 

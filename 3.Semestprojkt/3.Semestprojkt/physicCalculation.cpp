@@ -9,12 +9,14 @@ physicCalculation::physicCalculation()
 
 std::vector<double> physicCalculation::calc(double targetX, double targetY, double cupZ)
 {
-	result.clear;
-	double rotate; // Rotate base to (rad)
+	result.clear();
+	_targetX = targetX;
+	_targetY = targetY;
+	//_rotate; // Rotate base to (rad)
 	double throwDist; // Distance tcp to target (m)
 	double tangVel; // Tangential velocity (m/s)
-	double angleVel; // Angle velocity: (rad/s)
-	double angleAcc; // Angle acceleration (fixed startpos): (rad/s^2)
+	//_angleVel; // Angle velocity: (rad/s)
+	//_angleAcc; // Angle acceleration (fixed startpos): (rad/s^2)
 	double startAng; // Startposition (fixed max acceleraion): (rad)
 	
 	const double base = 0.09; // UR5 base link
@@ -38,13 +40,13 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	const double secondJoint = lowArm + handAndTcp; // length of static arm rotated at second joint
 	const double thirdJoint = handAndTcp; // length of static arm rotated at third joint
 	const double effectRadius = firstJoint + secondJoint + thirdJoint; // radius is replaced by the resulting leverage of 3 synchronized joints
-	rotate = maxRadVel * effectRadius; // v = w * r
-	double ratio = rotate / maxRadVel;
+	_rotate = maxRadVel * effectRadius; // v = w * r
+	double ratio = _rotate / maxRadVel;
 
 	double offset = 0.10915; // Fysik lektion 10 slide 11 states 0.10915
 
-	double baseDist = sqrt(pow(targetX, 2) + pow(targetY, 2));
-	double baseAngle = atan(targetY / targetX);
+	double baseDist = sqrt(pow(_targetX, 2) + pow(_targetY, 2));
+	double baseAngle = atan(_targetY / _targetX);
 
 	// baseDist is the hypotenuse in a right triangle with sides 'offset' and 'distance'
 	double tcpDist = sqrt(pow(baseDist, 2) - pow(offset, 2));
@@ -59,17 +61,27 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	double velocity = tcpDist / dropTime;
 
 	// anglevelocity is the calculated rotational velocity [rad/s] to obtain required tangential velocity.
-	angleVel = velocity / effectRadius;
+	_angleVel = velocity / effectRadius;
 
 	// using 2-16, p22: v^2 = v_0^2 + 2a (x-x_0) => 1/2* ( v^2 / (pi/4) )
-	angleAcc = 0.5*((angleVel*angleVel) / (PI / 4));
+	_angleAcc = 0.5*((_angleVel*_angleVel) / (PI / 4));
 
-	result.push_back(rotate);
-	result.push_back(angleVel);
-	result.push_back(angleAcc);
-	result.push_back(angleVel / angleAcc);
+	result.push_back(_rotate);
+	result.push_back(_angleVel);
+	result.push_back(_angleAcc);
+	result.push_back(_angleVel / _angleAcc);
 	
 	return result;
+}
+
+double physicCalculation::getAngleVel()
+{
+	return _angleVel;
+}
+
+double physicCalculation::getAngleAcc()
+{
+	return _angleAcc;
 }
 
 

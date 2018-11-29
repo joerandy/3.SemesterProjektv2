@@ -1,20 +1,14 @@
 #include "database.h"
-
-
-
 database::database()
 {
 
 }
 
-
 database::~database()
 {
 }
 
-void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, bool success)
-{
-	
+void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, double vel, double acc, bool succesCam, bool succesUser){
 	try {
 		sql::Driver *driver;
 		sql::Connection *con;
@@ -22,19 +16,21 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 
 		driver = get_driver_instance();
 		con = driver->connect(dbhostname, dbuser, dbpw);
-		con->setSchema("test");
+		con->setSchema("pongdb");
 
-		pstmt = con->prepareStatement("INSERT test_Data VALUES (CURRENT_TIMESTAMP,?,?,?,?,?)");
+		pstmt = con->prepareStatement("INSERT testData VALUES (CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)");
 		pstmt->setDouble(1, ballXpos);
 		pstmt->setDouble(2, ballYpos);
 		pstmt->setDouble(3, cupXpos);
 		pstmt->setDouble(4, cupYpos);
-		pstmt->setBoolean(5, success);
+		pstmt->setDouble(5, vel);
+		pstmt->setDouble(6, acc);
+		pstmt->setBoolean(7, succesCam);
+		pstmt->setBoolean(8, succesUser);
 		pstmt->executeUpdate();
 
 		delete pstmt;
 		delete con;
-
 	}
 	catch (sql::SQLException &e) {
 		std::cout << "# ERR: SQLException in " << __FILE__;
@@ -43,14 +39,4 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 		std::cout << " (MySQL error code: " << e.getErrorCode();
 		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
 	}
-}
-
-void database::setCredentials(std::string hostname, std::string dbusername, std::string dbpass)
-{
-	
-	/*
-	dbhostname = hostname.c_str();
-	dbuser = dbusername.c_str();
-	dbpw = dbpw.c_str();
-	std::cout << std::endl << dbpw.c_str();*/
 }

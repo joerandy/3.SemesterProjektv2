@@ -12,13 +12,14 @@ class physicCalculation
 public:
 	physicCalculation();
 	std::vector<double> calc(double targetX, double targetY, double cupZ);
-
+	double getAngleVel();
+	double getAngleAcc();
 	~physicCalculation();
 private:
 	double _targetX;
 	double _targetY;
 	double _rotate;
-	double _angelVel;
+	double _angleVel;
 	double _angleAcc;
 
 	std::vector<double> result;

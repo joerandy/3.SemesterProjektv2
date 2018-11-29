@@ -18,7 +18,7 @@ bool running = true;
 
 void dbTesting() {
 	database DB;
-	DB.addEntry(11.0, 12, 13, 14, false);
+	DB.addEntry(11.0, 12, 13, 14, 10,15, false, true);
 
 }
 void socketTesting() {
@@ -60,8 +60,7 @@ int programLoop() {
 	com.createSoc();
 	std::string recvdMsg, sendMsg;
 	bool recvdSuccess;
-	int cupZ = 0;
-	int ballX, ballY;
+	double cupZ = 0;
 	bool running = true;
 		//foerst modtager vi strengen "new" og sender intet svar men modtager lige herefter cup z --V
 		//svar med ball x,y,d --V
@@ -72,8 +71,12 @@ int programLoop() {
 		//modtager bruger input success, 0 eller 1
 		//svar med (1)
 		//modtager "new" || "exit"
-	img.getCoordinates("cup");
+	coordinates posBall;
+	coordinates posCup;
+	physicCalculation physic;
+	img.getCoordinates("cup"); //changes the member variable circles
 	std::vector<cv::Vec3f> cups = img.getCups();
+
 	bool firsttime = true;
 	for (int i = cups.size(); i >= 0 && running; i--) {
 		while (running) {
@@ -84,9 +87,9 @@ int programLoop() {
 			if (recvdMsg.substr(0,3) == "new") {
 				std::cout << "Entered loop" << endl;
 				cupZ = stof(recvdMsg.substr(3,recvdMsg.length()));
-				coordinates pos = img.getCoordinates("ball");
-				std::cout << "The message is: " << "(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")" << endl;
-				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")");
+				posBall = img.getCoordinates("ball");
+				std::cout << "The message is: " << "(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")" << endl;
+				com.sendMsg("(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")");
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
 				if (recvdMsg != "ball picked up") {
@@ -95,8 +98,7 @@ int programLoop() {
 				}
 
 				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
-				physicCalculation physic;
-				std::vector<double> profile = physic.calc(pos.x, pos.y, cupZ);
+				std::vector<double> profile = physic.calc(cups[i][0], cups[i][1], cupZ);
 				com.sendMsg("(" + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")"); //send vinkel, hastighed, acceleration
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
@@ -130,6 +132,8 @@ int programLoop() {
 					firsttime = false;
 				}
 			}
+			database DB;
+			DB.addEntry(posBall.x, posBall.y, posCup.x, posBall.y, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
 		}
 		cups.pop_back();
 	}
