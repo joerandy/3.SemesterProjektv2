@@ -49,13 +49,14 @@ bool image::getImg() {
 		return false;
 	}
 
-	Mat inputImg;
 	Mat undistImg;
-	cap >> inputImg; // get a new frame from camera
+	cap >> _inputImg; // get a new frame from camera
+
 	//inputImg = imread("C:/Users/Rasmu/OneDrive/Desktop/Basler10.tiff");  //for testing without USB camera connected
-	undistort(inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
+	undistort(_inputImg, undistImg, _cameraMatrix, _distortionCoefficient);		// removes lens - distortion
 	warpPerspective(undistImg, _srcImg, _perspectiveMatrix, undistImg.size());	// warps in respect to the angle between lens and object surface
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
+
 	return true;
 }
 
@@ -64,26 +65,24 @@ void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
 	if (object == "ball") {
-		inRange(_hsvImg, Scalar(10, 250, 0), Scalar(25, 255, 200), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
+		inRange(_hsvImg, Scalar(5,150,0), Scalar(35, 255, 255), _mask); // Scalar(5, 150, 0), Scalar(35, 255, 255)
+
+		_dstImg.release();
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
-
-		//imshow("masked image", _dstImg);
-		//waitKey(0);
 	}
 	else if (object == "cup") {
 		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(179, 255, 255), _mask); // Scalar(0, 0, 0), Scalar(100, 150, 255)
 
+		_dstImg.release();
+
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
-
-		//imshow("masked image", _dstImg);
-		//waitKey(0);
 	}
-
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2));
-
+// kommenter 
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2)); //muligvis sættes size op 
+// kommenter 
 	morphologyEx(_dstImg, _dstImg, MORPH_OPEN, kernel);
-
+// kommenter 
 	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
 }
 
@@ -100,15 +99,20 @@ void image::convertGray() {
 std::vector<cv::Vec3f> image::detectCircles(string object) {
 	getImg();
 	maskColour(object);
+// FORSKELLIGT!!!
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
+
 	vector<Vec3f> circles;
 		// depending of the object we are looking for (ball or cup), we look for different sizes.
 		if (object == "ball") {
+			cout << "balls called" << endl;
+
 			GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
 
 			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); // the last two ints determine size of the circles we accept
 			
 			if (!circles.empty()) {
+				cout << "circles (balls) found!" << endl;
 				_x = circles[0][0]/1000;
 				_y = (circles[0][1]/1000) - 0.95;
 				_r = circles[0][2]/1000;
@@ -119,9 +123,11 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 			}
 		}
 		else if (object == "cup") {
+			cout << "cups called" << endl;
 			medianBlur(_grayImg, _grayImg, 5);
 			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
 			if (!circles.empty()) {
+				cout << "circles (cups) found!" << endl;
 				for (int i = 0; i < circles.size(); i++)
 				{
 					circles[i][0] = circles[i][0] / 1000;
@@ -134,25 +140,7 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 				cout << "No circles found..." << endl;
 			}
 		}
-
-	//for (size_t i = 0; i < circles.size(); i++) {
-	//	Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-	//	int radius = cvRound(circles[i][2]);
-	//	int diameter = radius * 2;
-	//	cout << "Cirkel nr. " << i << "'s diameter er: " << diameter << endl;
-	//	cout << "Center = " << center << endl;
-	//	cout << "circles[0][0] " << circles[0][0];
-	//	cout << "circles[0][1] " << circles[0][1];
-	//	cout << "circles[0][2] " << circles[0][2];
-	//	// circle center
-	//	circle(_dstImg, center, 3, Scalar(255, 0, 0), -1, 8, 0);
-	//	// circle outline
-	//	circle(_dstImg, center, radius, Scalar(0, 255, 0), 3, 8, 0);	// black circle around circular opbject
-	//	_x = center.x;
-	//	_y = center.y;
-	//	_r = radius;
-	//	_d = diameter;
-	// }
+		cout << "test print: " << _x << " " << _y << " " << _d << endl;
 	return circles;
 }
 
@@ -164,10 +152,13 @@ coordinates image::getCoordinates(string object) {
 	else {
 		cout << "Error in loading calibration data..." << endl;
 	}
+	// everything is called from detectcircles but does it have to
 	//getImg();
 	//convertHSV();
 	//maskColour("ball");
 	detectCircles(object);
+	
+
 	return coordinates{ _x, _y, _d};
 }
 

@@ -52,7 +52,7 @@ bool imageTesting() {
 }
 
 int programLoop() {
-	cout << "Program Loop called" << endl;
+	std::cout << "Program Loop called" << endl;
 	communication com;
 	image img;
 	com.createSoc();
@@ -72,32 +72,37 @@ int programLoop() {
 		//modtager "new" || "exit"
 	img.getCoordinates("cup");
 	std::vector<cv::Vec3f> cups = img.getCups();
+	bool firsttime = true;
 	for (int i = cups.size(); i >= 0 && running; i--) {
 		while (running) {
-			recvdMsg = com.recvMsg();
-			cout << recvdMsg << endl;
+			if (firsttime) {
+				recvdMsg = com.recvMsg();
+				std::cout << recvdMsg << endl;
+			}
 			if (recvdMsg.substr(0,3) == "new") {
+				std::cout << "Entered loop" << endl;
 				cupZ = stof(recvdMsg.substr(3,recvdMsg.length()));
 				coordinates pos = img.getCoordinates("ball");
+				std::cout << "The message is: " << "(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")" << endl;
 				com.sendMsg("(" + to_string(pos.x) + "," + to_string(pos.y) + "," + to_string(pos.diameter) + ")");
 				recvdMsg = com.recvMsg();
-				cout << recvdMsg << endl;
+				std::cout << recvdMsg << endl;
 				if (recvdMsg != "ball picked up") {
-					cout << "Unexpected reply from client\n";
+					std::cout << "Unexpected reply from client\n";
 					return 1;
 				}
 
 				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
-				com.sendMsg("(5.54, 1.803, 1.644)"); //send vinkel, hastighed, acceleration
+				com.sendMsg("(-0.78539, 3, 20)"); //send vinkel, hastighed, acceleration
 				recvdMsg = com.recvMsg();
-				cout << recvdMsg << endl;
+				std::cout << recvdMsg << endl;
 				if (recvdMsg != "ball thrown") {
-					cout << "Unexpected reply from client\n";
+					std::cout << "Unexpected reply from client\n";
 					return 1;
 				}
 				com.sendMsg("(1)"); //send success, ball i cup detection
 				recvdMsg = com.recvMsg();
-				cout << recvdMsg << endl;
+				std::cout << recvdMsg << endl;
 				if (recvdMsg == "1") {
 					recvdSuccess = true;
 				}
@@ -105,17 +110,20 @@ int programLoop() {
 					recvdSuccess = false;
 				}
 				else {
-					cout << "Unexpected message recieved";
+					std::cout << "Unexpected message recieved";
 					return 1;
 				}
 				com.sendMsg("(1)");
 
 				//save data to DB here
 				recvdMsg = com.recvMsg();
-				cout << recvdMsg << endl;
+				std::cout << recvdMsg << endl;
 				if (recvdMsg == "exit") {
 					running = false;
-					cout << "Exit msg recieved, breaking loop";
+					std::cout << "Exit msg recieved, breaking loop";
+				}
+				else {
+					firsttime = false;
 				}
 			}
 		}
@@ -158,7 +166,7 @@ int main() {
 	//getCupsCoordinatesTest();
 
 
-	getchar();
+	
 	return programLoop();
 	return 0;
 }

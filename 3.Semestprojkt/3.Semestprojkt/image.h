@@ -9,9 +9,9 @@
 #include <opencv2/videoio.hpp>
 
 struct coordinates {
-	float x;
-	float y;
-	float diameter;
+	float x = 0.0;
+	float y = 0.0;
+	float diameter = 0.0;
 };
 
 class image
@@ -41,6 +41,7 @@ public:
 
 
 private:
+	cv::Mat _inputImg;								// input image
 	cv::Matx33f _cameraMatrix;						// camera-matrix 
 	cv::Vec<float, 5> _distortionCoefficient;		// Distortion-coefficient
 	cv::Matx33f _perspectiveMatrix;					// Perspective matrix
