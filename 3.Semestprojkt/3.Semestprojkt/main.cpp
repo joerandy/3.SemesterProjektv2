@@ -6,6 +6,8 @@
 #include "communication.h"
 #include "database.h"
 #include "image.h"
+#include "physicCalculation.h"
+
 
 
 using namespace std;
@@ -93,7 +95,9 @@ int programLoop() {
 				}
 
 				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
-				com.sendMsg("(-0.78539, 3, 20)"); //send vinkel, hastighed, acceleration
+				physicCalculation physic;
+				std::vector<double> profile = physic.calc(pos.x, pos.y, cupZ);
+				com.sendMsg("(" + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")"); //send vinkel, hastighed, acceleration
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
 				if (recvdMsg != "ball thrown") {

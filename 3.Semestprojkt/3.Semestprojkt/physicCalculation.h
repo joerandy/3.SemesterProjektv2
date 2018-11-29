@@ -11,7 +11,7 @@ class physicCalculation
 {
 public:
 	physicCalculation();
-	cv::Vec<double, 5> calc(double targetX, double targetY);
+	std::vector<double> calc(double targetX, double targetY, double cupZ);
 
 	~physicCalculation();
 private:
@@ -20,5 +20,7 @@ private:
 	double _rotate;
 	double _angelVel;
 	double _angleAcc;
+
+	std::vector<double> result;
 };
 

@@ -74,8 +74,8 @@
     <LibraryPath>C:\opencv\opencv\build\x64\vc14\lib;C:\opencv\opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\opencv\opencv\build\include;C:\Program Files\MySQL\Connector C++ 8.0\include;C:\boost_1_68_0;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\opencv\build\x64\vc15\lib;C:\Program Files\MySQL\Connector C++ 8.0\lib64\vs14;C:\boost_1_68_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\opencv1\opencv\build\include;C:\Program Files\MySQL\Connector C++ 8.0\include;C:\boost_1_68_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv1\opencv\build\x64\vc15\lib;C:\Program Files\MySQL\Connector C++ 8.0\lib64\vs14;C:\boost_1_68_0\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,11 +132,13 @@
     <ClCompile Include="database.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="physicCalculation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communication.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="physicCalculation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
