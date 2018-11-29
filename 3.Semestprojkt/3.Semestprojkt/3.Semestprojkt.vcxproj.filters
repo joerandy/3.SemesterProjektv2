@@ -27,6 +27,9 @@
     <ClCompile Include="communication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="physicCalculation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="communication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physicCalculation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

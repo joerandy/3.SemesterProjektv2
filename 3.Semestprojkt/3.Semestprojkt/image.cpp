@@ -64,42 +64,26 @@ bool image::getImg() {
 void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
-
-
-
 	if (object == "ball") {
-		cout << "masking ball" << endl;
-		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(255, 255, 255), _mask); // Scalar(10, 150, 0), Scalar(25, 255, 200)
-		_dstImg.release();
-		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
-		
-		cv::imwrite("../picture.png", _dstImg);
+		inRange(_hsvImg, Scalar(5,150,0), Scalar(35, 255, 255), _mask); // Scalar(5, 150, 0), Scalar(35, 255, 255)
 
-		//imshow("masked image", _dstImg);
-		//waitKey(0);
+		_dstImg.release();
+
+		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 	}
 	else if (object == "cup") {
-		cout << "masking cup" << endl;
 		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(179, 255, 255), _mask); // Scalar(0, 0, 0), Scalar(100, 150, 255)
+
 		_dstImg.release();
+
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
-
-		cv::imwrite("../picture.png", _dstImg);
-
-		//imshow("masked image", _dstImg);
-		//waitKey(0);
 	}
-
-
-
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2));
-
+// kommenter 
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2)); //muligvis sættes size op 
+// kommenter 
 	morphologyEx(_dstImg, _dstImg, MORPH_OPEN, kernel);
-
+// kommenter 
 	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
-
-
-
 }
 
 //deprecated, merged into getImg() -- can be removed
@@ -117,10 +101,6 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	maskColour(object);
 // FORSKELLIGT!!!
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
-
-	//cv::namedWindow("test", WINDOW_AUTOSIZE);
-	//cv::imshow("test", _grayImg);
-	//cv::waitKey(0);
 
 	vector<Vec3f> circles;
 		// depending of the object we are looking for (ball or cup), we look for different sizes.
@@ -161,25 +141,6 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 			}
 		}
 		cout << "test print: " << _x << " " << _y << " " << _d << endl;
-
-	//for (size_t i = 0; i < circles.size(); i++) {
-	//	Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-	//	int radius = cvRound(circles[i][2]);
-	//	int diameter = radius * 2;
-	//	cout << "Cirkel nr. " << i << "'s diameter er: " << diameter << endl;
-	//	cout << "Center = " << center << endl;
-	//	cout << "circles[0][0] " << circles[0][0];
-	//	cout << "circles[0][1] " << circles[0][1];
-	//	cout << "circles[0][2] " << circles[0][2];
-	//	// circle center
-	//	circle(_dstImg, center, 3, Scalar(255, 0, 0), -1, 8, 0);
-	//	// circle outline
-	//	circle(_dstImg, center, radius, Scalar(0, 255, 0), 3, 8, 0);	// black circle around circular opbject
-	//	_x = center.x;
-	//	_y = center.y;
-	//	_r = radius;
-	//	_d = diameter;
-	// }
 	return circles;
 }
 
@@ -191,7 +152,7 @@ coordinates image::getCoordinates(string object) {
 	else {
 		cout << "Error in loading calibration data..." << endl;
 	}
-	// everything is called from detectcircles
+	// everything is called from detectcircles but does it have to
 	//getImg();
 	//convertHSV();
 	//maskColour("ball");
