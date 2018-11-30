@@ -29,7 +29,6 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	const double height = base + upArm + lowArm + handAndTcp; // maximum height
 	const double radius = height - base; // radius
 	const double PI = 3.141592653589793; // pi
-
 	const double maxRadVel = PI; // maximum joint-velocity
 
 	const double dropHeight = height - cupZ;
@@ -40,10 +39,10 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	const double secondJoint = lowArm + handAndTcp; // length of static arm rotated at second joint
 	const double thirdJoint = handAndTcp; // length of static arm rotated at third joint
 	const double effectRadius = firstJoint + secondJoint + thirdJoint; // radius is replaced by the resulting leverage of 3 synchronized joints
-	_rotate = maxRadVel * effectRadius; // v = w * r
-	double ratio = _rotate / maxRadVel;
+	double effektVel = maxRadVel * effectRadius - 2*PI; // v = w * r
+	double ratio = effektVel / maxRadVel;
 
-	double offset = 0.10915; // Fysik lektion 10 slide 11 states 0.10915
+	double offset = 0.112; // Fysik lektion 10 slide 11 states 0.10915
 
 	double baseDist = sqrt(pow(_targetX, 2) + pow(_targetY, 2));
 	double baseAngle = atan(_targetY / _targetX);
@@ -55,7 +54,7 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	double corrAngle = asin(offset / tcpDist);
 
 	// effectAngle = baseAngel - corrAngle
-	double effectAngle = baseAngle - corrAngle;
+	_rotate = baseAngle + corrAngle;
 	
 	// velocity is the needed velocity [m/s], to obtain a throw length at 'distance' [m]
 	double velocity = tcpDist / dropTime;
@@ -69,7 +68,7 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	result.push_back(_rotate);
 	result.push_back(_angleVel);
 	result.push_back(_angleAcc);
-	result.push_back(_angleVel / _angleAcc);
+	result.push_back(_angleVel / _angleAcc - 0.4);
 	
 	return result;
 }

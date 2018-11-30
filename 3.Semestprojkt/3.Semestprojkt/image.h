@@ -49,7 +49,7 @@ private:
 	cv::Mat _mask;									// stores picture of color-mask
 	cv::Mat _grayImg;								// stores picture converted to grayscale
 	cv::Mat _dstImg;								// stores output pictue
-	std::vector<cv::Vec3f> cups;
+	std::vector<cv::Vec3f> _cups;
 	float _x;
 	float _y;
 	float _r;

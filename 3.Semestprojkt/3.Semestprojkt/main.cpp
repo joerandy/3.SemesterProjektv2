@@ -56,7 +56,7 @@ bool imageTesting() {
 int programLoop() {
 	std::cout << "Program Loop called" << endl;
 	communication com;
-	image img;
+	image imgCups;
 	com.createSoc();
 	std::string recvdMsg, sendMsg;
 	bool recvdSuccess;
@@ -74,12 +74,20 @@ int programLoop() {
 	coordinates posBall;
 	coordinates posCup;
 	physicCalculation physic;
-	img.getCoordinates("cup"); //changes the member variable circles
-	std::vector<cv::Vec3f> cups = img.getCups();
+	imgCups.getCoordinates("cup"); //changes the member variable circles
+	std::vector<cv::Vec3f> cups = imgCups.getCups();
+	for (int i = 0; i < cups.size(); i++) {
+		cout << cups[i][0] << endl;
+		cout << cups[i][1] << endl;
+		cout << cups[i][2] << endl;
+	}
+
+	image imgBall;
 
 	bool firsttime = true;
-	for (int i = cups.size(); i >= 0 && running; i--) {
-		while (running) {
+			//for (int i = 0; i <= cups.size() && running; i++) {
+			int i = 0;
+			while (i <= cups.size()){
 			if (firsttime) {
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
@@ -87,7 +95,7 @@ int programLoop() {
 			if (recvdMsg.substr(0,3) == "new") {
 				std::cout << "Entered loop" << endl;
 				cupZ = stof(recvdMsg.substr(3,recvdMsg.length()));
-				posBall = img.getCoordinates("ball");
+				posBall = imgBall.getCoordinates("ball");
 				std::cout << "The message is: " << "(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")" << endl;
 				com.sendMsg("(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")");
 				recvdMsg = com.recvMsg();
@@ -96,10 +104,15 @@ int programLoop() {
 					std::cout << "Unexpected reply from client\n";
 					return 1;
 				}
+				
+				cout << cups[i][0] << " , " << cups[i][1] << endl;
 
 				//kald fysik kode, giv kop koordinater (cups[i][0], cups[i][1]) som param og få vinkel, hastighed, acceleration
 				std::vector<double> profile = physic.calc(cups[i][0], cups[i][1], cupZ);
-				com.sendMsg("(" + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")"); //send vinkel, hastighed, acceleration
+				cout << to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")" << endl; //send vinkel, hastighed, acceleration
+				com.sendMsg("( " + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + " )");
+				//com.sendMsg("(-0.78539, 6, 2000, 0.15)");
+				
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
 				if (recvdMsg != "ball thrown") {
@@ -121,6 +134,13 @@ int programLoop() {
 				}
 				com.sendMsg("(1)");
 
+				database DB;
+				DB.addEntry(posBall.x, posBall.y, posCup.x, posBall.y, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
+
+				if (recvdSuccess) {
+					i++;
+				}
+
 				//save data to DB here
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
@@ -132,11 +152,8 @@ int programLoop() {
 					firsttime = false;
 				}
 			}
-			database DB;
-			DB.addEntry(posBall.x, posBall.y, posCup.x, posBall.y, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
+			
 		}
-		cups.pop_back();
-	}
 	cv::waitKey(30);
 }
 

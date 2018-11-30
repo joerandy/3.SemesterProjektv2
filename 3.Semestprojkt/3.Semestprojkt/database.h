@@ -19,9 +19,8 @@ public:
 	database();
 	~database();
 	//void return type - maybe change to bool to return false if data is not saved
-	void addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, bool success);
-	//not currently implemented properly.
-	void setCredentials(std::string hostname, std::string dbuser, std::string dbpw);
+	void addEntry(double ballXpos, double ballYpos, double cupXpos, double cupYpos, double vel, double acc, bool succesCam, bool succesUser);
+
 private:
 	sql::SQLString dbpw = "";
 	sql::SQLString dbuser = "";
