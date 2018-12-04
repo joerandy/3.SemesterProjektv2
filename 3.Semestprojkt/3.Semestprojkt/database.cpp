@@ -1,7 +1,6 @@
 #include "database.h"
 database::database()
 {
-
 }
 
 database::~database()
@@ -18,7 +17,20 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 		con = driver->connect(dbhostname, dbuser, dbpw);
 		con->setSchema("pongdb");
 
-		pstmt = con->prepareStatement("INSERT testData VALUES (CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)");
+		pstmt = con->prepareStatement("INSERT testdata VALUES (CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)");
+		
+		//std::time_t rawtime;
+		//std::tm* timeinfo;
+		//char buffer[80]
+
+		//std::time(&rawtime);
+		//timeinfo = std::localtime(&rawtime);
+
+		//std::strftime(buffer, 80, "%Y-%m-%d-%H-%M-%S", timeinfo);
+		//"YYYY-MM-DD HH-MM-SS"
+
+		//std::string dateTime = "2018-12-5 12-12-12";
+		//pstmt->setDateTime(1, dateTime); // USING PLACEHOLDER VALUE TO SHOW FORMAT, REPLACE WITH dateTime PARAMETER
 		pstmt->setDouble(1, ballXpos);
 		pstmt->setDouble(2, ballYpos);
 		pstmt->setDouble(3, cupXpos);
@@ -30,7 +42,7 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 		pstmt->executeUpdate();
 
 		delete pstmt;
-		delete con;
+		delete con;	
 	}
 	catch (sql::SQLException &e) {
 		std::cout << "# ERR: SQLException in " << __FILE__;

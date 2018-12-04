@@ -56,7 +56,7 @@ bool imageTesting() {
 int programLoop() {
 	std::cout << "Program Loop called" << endl;
 	communication com;
-	image imgCups;
+	image img;
 	com.createSoc();
 	std::string recvdMsg, sendMsg;
 	bool recvdSuccess;
@@ -74,15 +74,12 @@ int programLoop() {
 	coordinates posBall;
 	coordinates posCup;
 	physicCalculation physic;
-	imgCups.getCoordinates("cup"); //changes the member variable circles
-	std::vector<cv::Vec3f> cups = imgCups.getCups();
+	img.getCoordinates("cup"); //changes the member variable circles
+	std::vector<cv::Vec3f> cups = img.getCups();
+	//printing the cups cordinates x
 	for (int i = 0; i < cups.size(); i++) {
 		cout << cups[i][0] << endl;
-		cout << cups[i][1] << endl;
-		cout << cups[i][2] << endl;
 	}
-
-	image imgBall;
 
 	bool firsttime = true;
 			//for (int i = 0; i <= cups.size() && running; i++) {
@@ -95,7 +92,7 @@ int programLoop() {
 			if (recvdMsg.substr(0,3) == "new") {
 				std::cout << "Entered loop" << endl;
 				cupZ = stof(recvdMsg.substr(3,recvdMsg.length()));
-				posBall = imgBall.getCoordinates("ball");
+				posBall = img.getCoordinates("ball");
 				std::cout << "The message is: " << "(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")" << endl;
 				com.sendMsg("(" + to_string(posBall.x) + "," + to_string(posBall.y) + "," + to_string(posBall.diameter) + ")");
 				recvdMsg = com.recvMsg();
@@ -111,7 +108,7 @@ int programLoop() {
 				std::vector<double> profile = physic.calc(cups[i][0], cups[i][1], cupZ);
 				cout << to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")" << endl; //send vinkel, hastighed, acceleration
 				com.sendMsg("( " + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + " )");
-				//com.sendMsg("(-0.78539, 6, 2000, 0.15)");
+				//com.sendMsg("(-0.78539, 6, 35, 0.15)");
 				
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
@@ -136,7 +133,7 @@ int programLoop() {
 
 				database DB;
 				DB.addEntry(posBall.x, posBall.y, posCup.x, posBall.y, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
-
+				
 				if (recvdSuccess) {
 					i++;
 				}
@@ -189,9 +186,9 @@ int main() {
 
 	//getBallCoordinatesTest();
 	//getCupsCoordinatesTest();
-
-
+	
 	
 	return programLoop();
+	
 	return 0;
 }
