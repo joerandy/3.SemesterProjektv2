@@ -11,8 +11,6 @@
 
 
 using namespace std;
-
-string lastProcessedMsg;
 bool running = true;
 
 
@@ -79,6 +77,7 @@ int programLoop() {
 	//printing the cups cordinates x
 	for (int i = 0; i < cups.size(); i++) {
 		cout << cups[i][0] << endl;
+		cout << cups[i][1] << endl;
 	}
 
 	bool firsttime = true;
@@ -108,7 +107,7 @@ int programLoop() {
 				std::vector<double> profile = physic.calc(cups[i][0], cups[i][1], cupZ);
 				cout << to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + ")" << endl; //send vinkel, hastighed, acceleration
 				com.sendMsg("( " + to_string(profile[0]) + ", " + to_string(profile[1]) + ", " + to_string(profile[2]) + ", " + to_string(profile[3]) + " )");
-				//com.sendMsg("(-0.78539, 6, 35, 0.15)");
+				//com.sendMsg("(" + to_string(profile[0]) + ", 6.27, 35, 0.2)");
 				
 				recvdMsg = com.recvMsg();
 				std::cout << recvdMsg << endl;
@@ -132,7 +131,7 @@ int programLoop() {
 				com.sendMsg("(1)");
 
 				database DB;
-				DB.addEntry(posBall.x, posBall.y, posCup.x, posBall.y, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
+				DB.addEntry(posBall.x*1000, posBall.y*1000, posCup.x*1000, posBall.y*1000, physic.getAngleVel(), physic.getAngleAcc(), false, recvdSuccess);
 				
 				if (recvdSuccess) {
 					i++;
