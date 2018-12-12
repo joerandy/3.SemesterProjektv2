@@ -18,7 +18,7 @@ image::~image() {
 
 
 bool image::getCalibration(string fileName) {
-	ifstream myfile;
+	ifstream myfile;	//in file stream
 	myfile.open(fileName);
 
 	if (myfile.fail()) {							// checks for iostate failbit flag
@@ -67,32 +67,34 @@ void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
 	if (object == "ball") {
-		inRange(_hsvImg, Scalar(5,150,0), Scalar(35, 255, 255), _mask); // Scalar(5, 150, 0), Scalar(35, 255, 255)
+		inRange(_hsvImg, Scalar(5,150,0), Scalar(35, 255, 255), _mask); 
 
 		_dstImg.release();
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 	}
 	else if (object == "cup") {
-		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(179, 255, 255), _mask); // Scalar(0, 0, 0), Scalar(100, 150, 255)
+		inRange(_hsvImg, Scalar(0, 0, 0), Scalar(179, 255, 255), _mask); 
 
 		_dstImg.release();
 
 		bitwise_and(_srcImg, _srcImg, _dstImg, _mask);
 	}
-// kommenter 
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2)); //Size(9,9)
-// kommenter 
+// determines the degree of morphology
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5), Point(2, 2)); 
+// uses morphology to  first erode and then dialate the picture. (removes white dots in mask)
 	morphologyEx(_dstImg, _dstImg, MORPH_OPEN, kernel);
-// kommenter 
+// uses morphology to first dilate and then erode the picture. (removes black dots outside the mask)
 	morphologyEx(_dstImg, _dstImg, MORPH_CLOSE, kernel);
 }
 
 void image::convertHSV() {			
+	// converts from RBG to HSV
 	cvtColor(_srcImg, _hsvImg, COLOR_BGR2HSV);
 }
 
 void image::convertGray() {
+	// converts from RBG to grayscale
 	cvtColor(_dstImg, _grayImg, COLOR_BGR2GRAY);
 }
 
@@ -100,10 +102,10 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	vector<Vec3f> circles;
 		// depending of the object we are looking for (ball or cup), we look for different sizes.
 		if (object == "ball") {
-			GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2); // Size(9,9)
+			GaussianBlur(_grayImg, _grayImg, cv::Size(5, 5), 2, 2);
 			 
 			// the last two ints determine radius of the circles we accept
-			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 30);  //18 22
+			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 18, 22); 
 			
 			if (!circles.empty()) {
 				cout << "circles (balls) found!" << endl;
@@ -118,7 +120,7 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 		}
 		else if (object == "cup") {
 			cout << "cups called" << endl;
-			//better for white
+			// medianBlur seems to work better for white
 			medianBlur(_grayImg, _grayImg, 5);
 			HoughCircles(_grayImg, circles, CV_HOUGH_GRADIENT, 1, 30, 200, 25, 40, 45);
 			if (!circles.empty()) {
@@ -149,6 +151,7 @@ coordinates image::getCoordinates(string object) {
 
 //method for displaying image at a given time, for testing purposes
 void image::display() {
+	// displays the destination image.
 	imshow("Display _dst", _dstImg);
 	waitKey(0);
 }
