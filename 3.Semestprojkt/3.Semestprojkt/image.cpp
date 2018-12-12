@@ -16,7 +16,7 @@ image::image() {
 image::~image() {
 }
 
-//called from detectCircles(), no need to call externally
+
 bool image::getCalibration(string fileName) {
 	ifstream myfile;
 	myfile.open(fileName);
@@ -46,7 +46,6 @@ bool image::getCalibration(string fileName) {
 	return true;
 }
 
-//called from detectCircles, no need to call externally
 bool image::getImg() {
 	VideoCapture cap(1); // open the default camera (0), (1) for USB
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1440);	
@@ -64,7 +63,6 @@ bool image::getImg() {
 	return true;
 }
 
-//called from detectCircles() no need to call externally
 void image::maskColour(string object) {
 	// Scalars are found using the HSV colormap
 	// must be called when looking for either "ball" or "cup"
@@ -140,7 +138,6 @@ std::vector<cv::Vec3f> image::detectCircles(string object) {
 	return circles;
 }
 
-//replaces getBallCoordinatesTest() and getCupCoordinatesTest()
 coordinates image::getCoordinates(string object) {
 	getImg();
 	convertHSV();

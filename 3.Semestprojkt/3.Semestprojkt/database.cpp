@@ -19,18 +19,6 @@ void database::addEntry(double ballXpos, double ballYpos, double cupXpos, double
 
 		pstmt = con->prepareStatement("INSERT testdata VALUES (CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?)");
 		
-		//std::time_t rawtime;
-		//std::tm* timeinfo;
-		//char buffer[80]
-
-		//std::time(&rawtime);
-		//timeinfo = std::localtime(&rawtime);
-
-		//std::strftime(buffer, 80, "%Y-%m-%d-%H-%M-%S", timeinfo);
-		//"YYYY-MM-DD HH-MM-SS"
-
-		//std::string dateTime = "2018-12-5 12-12-12";
-		//pstmt->setDateTime(1, dateTime); // USING PLACEHOLDER VALUE TO SHOW FORMAT, REPLACE WITH dateTime PARAMETER
 		pstmt->setDouble(1, ballXpos);
 		pstmt->setDouble(2, ballYpos);
 		pstmt->setDouble(3, cupXpos);

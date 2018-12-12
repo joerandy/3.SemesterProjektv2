@@ -12,10 +12,19 @@ class communication
 public:
 	communication();
 	~communication();
+
+	//sets up a socket 
 	bool createSoc();                   // creates a socket (returns true/false)
+
+	//sends a given message over socket
 	void sendMsg(std::string message);  //sender en msg
+
+	//returns a message recieved on the socket.
 	std::string recvMsg();              // modtager en msg
-	void close();                       // lukker forbindelsen
+	
+	//Closes the socket
+	void close();                       
+
 private:
 	SOCKET _sock, _newSocket;           // Socket
 	const int _portNo = 30002;          // porten

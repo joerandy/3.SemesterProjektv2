@@ -13,7 +13,7 @@
 using namespace std;
 bool running = true;
 
-
+// START TEST METHODS
 void dbTesting() {
 	database DB;
 	DB.addEntry(11.0, 12, 13, 14, 10,15, false, true);
@@ -31,7 +31,6 @@ void socketTesting() {
 	}
 	com.close();
 }
-
 bool imageTesting() {
 	image img;
 	if (img.getCalibration("input.txt")) {
@@ -50,7 +49,9 @@ bool imageTesting() {
 	img.display();
 	return true;
 }
+// END TEST METHODS
 
+//The main loop the program operates in. Handles the communication protocol between UR5 and computer to exchange data.
 int programLoop() {
 	std::cout << "Program Loop called" << endl;
 	communication com;
@@ -153,29 +154,6 @@ int programLoop() {
 	cv::waitKey(30);
 }
 
-//simon bad om den her metode, ikke i brug endnu 
-double calcWrist1ToTCPangle(float h, float d5, float d6) {
-	return acos( ( pow(h+d6, 2) + pow(h+d6, 2) + pow(d5, 2) - pow(d5, 2) ) / ( 2 * (h+d6) * pow( pow(h+d6, 2) + pow(d5,2), 0.5 ) ) );
-}
-
-void getBallCoordinatesTest() {
-	image img;
-	coordinates pos;
-	pos = img.getCoordinates("ball");
-	cout << "Pos.x = " << pos.x << "  Pos.y = " << pos.y << "\n";
-}
-
-void getCupsCoordinatesTest() {
-	image img;
-	img.getCoordinates("cup");
-	vector<cv::Vec3f> cups = img.getCups();
-
-	for (int i = 0; i < cups.size(); i++) {
-		cout << "Cup nr. " << i << ", x: " << cups[i][0];
-		cout << " , y: " << cups[i][1];
-		cout << " , r: " << cups[i][2] << endl;
-	}
-}
 
 int main() {
 	//dbTesting();
@@ -188,6 +166,5 @@ int main() {
 	
 	
 	return programLoop();
-	
-	return 0;
+
 }

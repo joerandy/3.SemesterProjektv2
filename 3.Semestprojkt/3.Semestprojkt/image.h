@@ -16,27 +16,39 @@ struct coordinates {
 
 class image
 {
+	//Image is inteded to be used to get an image from a USB camera, apply undistortion/unwarping based on an input file, convert the image to HSV, apply a color mask,
+	//convert to greyscale and finally detecting either ball or cup sized circles.
+	//Use: Run getCoordinates() with either ("ball") or ("cup") to get coordinates for the objects relative to the UR5 robot.
+	//For balls use getCoordinates() return value. Get a vector of cup coordinates by calling getCups().
 public:
 	image();
 	~image();
-	
-	//called from detectCircles(), no need to call externally
+
+	//loads distortion coeffecients and camera matrix from input file
 	bool getCalibration(std::string fileName);	// reads from input file
-	//called from detectCircles, no longer need to call externally
+
+	//take a picture from USB camera, undistort and unwarp
 	bool getImg();								// takes picture
-	//called from detectCircles() so no longer need to call it externally
+
+	//superimpose mask to filter objects by color
 	void maskColour(std::string object);		// creates mask
 
-	//replaces getBallCoordinates() and getCupCoordinates(), untested with cups
+	//gets coordinates for the given object, "ball" or "cup". Ball coordinates is returned, cup coordinates are accessed through img.getCups() after this method has run
 	coordinates getCoordinates(std::string object);
+
+	//displays an image. used for testing
 	void display();								// display picture
 
+	//returns a vector of cup coordinates. Cups must be found with getCoordinates before this method is run.
 	std::vector<cv::Vec3f> getCups();
 
-	//deprecated, merged into getImg() -- can be removed
-	void convertHSV();							// converts to HSV
-	//deprecated, merged into detectCircles() -- can be removed
-	void convertGray();							// converts to grayscale
+	//converts image to HSV
+	void convertHSV();	
+
+	//converts image to greyscale
+	void convertGray();							
+
+	//detects circles in the masked image looking for objects that match the size of either "ball" or "cup" objects
 	std::vector<cv::Vec3f> detectCircles(std::string object);		// deetect circles
 
 private:
