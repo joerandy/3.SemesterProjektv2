@@ -39,13 +39,13 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	const double secondJoint = lowArm + handAndTcp; // length of static arm rotated at second joint
 	const double thirdJoint = handAndTcp; // length of static arm rotated at third joint
 	const double effectRadius = firstJoint + secondJoint + thirdJoint; // radius is replaced by the resulting leverage of 3 synchronized joints
-	double effektVel = maxRadVel * effectRadius; // v = w * r
+	//double effektVel = maxRadVel * effectRadius; // v = w * r
 	
-	double ratio = effektVel / maxRadVel;
+	//double ratio = effektVel / maxRadVel;
 
 	double offset = 0.112; // Fysik lektion 10 slide 11 states 0.10915
 
-	double baseDist = sqrt(pow(_targetX, 2) + pow(_targetY, 2))*4;
+	double baseDist = sqrt(pow(_targetX, 2) + pow(_targetY, 2));
 	double baseAngle = atan(_targetY / _targetX);
 
 	// baseDist is the hypotenuse in a right triangle with sides 'offset' and 'distance'
@@ -63,16 +63,15 @@ std::vector<double> physicCalculation::calc(double targetX, double targetY, doub
 	// anglevelocity is the calculated rotational velocity [rad/s] to obtain required tangential velocity.
 	_angleVel = velocity / effectRadius;
 
-	// factor for angle vel 
-	//_angleVel = _angleVel;
-
 	// using 2-16, p22: v^2 = v_0^2 + 2a (x-x_0) => 1/2* ( v^2 / (pi/4) )
 	_angleAcc = 0.5*((_angleVel*_angleVel) / (PI / 4));
+	
+
 
 	result.push_back(_rotate);
 	result.push_back(_angleVel);
 	result.push_back(_angleAcc);
-	result.push_back(_angleVel / _angleAcc - 0.27);
+	result.push_back(_angleVel / _angleAcc);
 	
 	return result;
 }
